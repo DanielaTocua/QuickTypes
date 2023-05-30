@@ -1,0 +1,18 @@
+New Entitiy User {
+    properties {
+        calificacion : {
+        type: int
+        validate: { type : int, max : 5}{
+        }
+        length: 10
+
+        }
+        username: string
+        email : string
+        password : string
+
+    }
+    relatons {
+    }
+
+}
