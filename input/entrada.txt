@@ -7,7 +7,16 @@ New Entity User {
         primary,
         default : "a"
 
-        },
+        }
+        ,calificacion2 : {
+                 type: number,
+                 validate: {  max : 5},
+                 length: 10,
+                 primary,
+                 default : "a"
+
+                 },
+
 
         username: string,
         email : string,
@@ -15,4 +24,7 @@ New Entity User {
     }
 
 
+}
+New DTO for user Login{
+base : strict
 }

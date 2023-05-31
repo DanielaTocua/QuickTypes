@@ -1,8 +1,9 @@
 grammar MiLenguaje;
 
 start
-   : definition start* EOF
-// | generation EOF
+   : definition start
+  // | generation EOF
+   | EOF
    ;
 
 definition
@@ -11,9 +12,16 @@ definition
 
 definables
    : ENTITY NAME '{' entityDef '}'
- //| DTO name '{' dtoDef '}'
+   | DTO 'for' NAME NAME '{' dtoDef '}'
    ;
-
+dtoDef
+   :'base' ':' dtoOpc
+   ;
+dtoOpc
+   : 'strict'
+   | 'flexible'
+   | 'none'
+   ;
 entityDef
    : PROPERTIES '{' propDef '}' RELATIONS relDef
    | PROPERTIES '{' propDef '}'

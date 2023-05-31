@@ -1,4 +1,4 @@
-// Generated from C:/Users/danie/IdeaProjects/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
+// Generated from C:/Users/junio/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -27,6 +27,18 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitDefinables(MiLenguajeParser.DefinablesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#dtoDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDtoDef(MiLenguajeParser.DtoDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#dtoOpc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDtoOpc(MiLenguajeParser.DtoOpcContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#entityDef}.
 	 * @param ctx the parse tree
