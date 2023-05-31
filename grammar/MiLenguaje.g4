@@ -1,7 +1,7 @@
 grammar MiLenguaje;
 
 start
-   : definition EOF
+   : definition start* EOF
 // | generation EOF
    ;
 
@@ -63,11 +63,13 @@ propObj
 
 propPairs
    : 'type' ':' types
-   | 'validate' ':' validationObj
    | 'length' ':' INT
-   | 'primary'
-   | 'nullable' ':' BOOLEAN
+   | 'nullable'
    | 'default' ':' basicValues
+   | 'generated'
+   | 'unique'
+   | 'validate' ':' validationObj
+   | 'primary'
    ;
 
 

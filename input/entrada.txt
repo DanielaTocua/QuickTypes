@@ -1,18 +1,18 @@
-New Entitiy User {
+New Entity User {
     properties {
         calificacion : {
-        type: int
-        validate: { type : int, max : 5}{
-        }
-        length: 10
+        type: number,
+        validate: {  max : 5},
+        length: 10,
+        primary,
+        default : "a"
 
-        }
-        username: string
-        email : string
+        },
+
+        username: string,
+        email : string,
         password : string
+    }
 
-    }
-    relatons {
-    }
 
 }

@@ -34,23 +34,77 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEntityDef(MiLenguajeParser.EntityDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiLenguajeParser#generation}.
+	 * Visit a parse tree produced by {@link MiLenguajeParser#relDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGeneration(MiLenguajeParser.GenerationContext ctx);
+	T visitRelDef(MiLenguajeParser.RelDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiLenguajeParser#name}.
+	 * Visit a parse tree produced by {@link MiLenguajeParser#relObj}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName(MiLenguajeParser.NameContext ctx);
+	T visitRelObj(MiLenguajeParser.RelObjContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MiLenguajeParser#qtobject}.
+	 * Visit a parse tree produced by {@link MiLenguajeParser#relPairs}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitQtobject(MiLenguajeParser.QtobjectContext ctx);
+	T visitRelPairs(MiLenguajeParser.RelPairsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#onDeleteTypes}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOnDeleteTypes(MiLenguajeParser.OnDeleteTypesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#relationTypes}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelationTypes(MiLenguajeParser.RelationTypesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#propDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPropDef(MiLenguajeParser.PropDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#propDefRecursion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPropDefRecursion(MiLenguajeParser.PropDefRecursionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#propObj}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPropObj(MiLenguajeParser.PropObjContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#propPairs}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPropPairs(MiLenguajeParser.PropPairsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#validationObj}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValidationObj(MiLenguajeParser.ValidationObjContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#validationPairs}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValidationPairs(MiLenguajeParser.ValidationPairsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#types}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypes(MiLenguajeParser.TypesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#obj}.
 	 * @param ctx the parse tree
@@ -75,4 +129,10 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitValue(MiLenguajeParser.ValueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#basicValues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBasicValues(MiLenguajeParser.BasicValuesContext ctx);
 }
