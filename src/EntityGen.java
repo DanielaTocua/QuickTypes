@@ -36,9 +36,7 @@ public class EntityGen extends MiLenguajeBaseListener {
     }
 
     public void generateEntity(String genEntityName)  {
-
         // Imports
-
         addText("import {\n");
         indent(true);
         addText("BaseEntity,\n");
@@ -107,8 +105,8 @@ public class EntityGen extends MiLenguajeBaseListener {
     @Override public void exitDefinables(MiLenguajeParser.DefinablesContext ctx){
 
         if (ctx.ENTITY() != null){
+            generateEntity(entityName);
             entityName = "";
-            generateEntity("User");
         }
     }
 
