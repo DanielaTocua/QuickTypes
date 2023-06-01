@@ -2,7 +2,6 @@ grammar MiLenguaje;
 
 start
    : definition start
-  // | generation EOF
    | EOF
    ;
 
@@ -61,8 +60,6 @@ propDef
    ;
 propDefRecursion
    : ',' propDef
-   | NAME ':' types
-   | NAME ':' propObj
    |
    ;
 propObj

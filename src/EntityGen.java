@@ -7,15 +7,25 @@ import java.util.*;
 public class EntityGen extends MiLenguajeBaseListener {
     Map<String, ArrayList<String[]>> entityDict = new HashMap<String, ArrayList<String[]>>();
 
-    Set <String>  importList = new HashSet<String>();
+    Map <String, Set<String>> entityImports = new HashMap<String, Set<String>>();
+
     String entityName;
-    String entityText  = "";
+    String text  = "";
 
     String propPairValues[] = new String[9];
     String columnName = "";
 
+    Integer indentCounter = 0;
+    public void indent(Boolean add){
+        if (add){
+            indentCounter ++;
+        }  else {
+            indentCounter --;
+        }
+    }
+
     public void addText(String textToAdd){
-        entityText = entityText + textToAdd;
+        text = text + "\t".repeat(indentCounter)+ textToAdd;
 
     }
 
@@ -25,44 +35,80 @@ public class EntityGen extends MiLenguajeBaseListener {
         Arrays.fill(propPairValues, "");
     }
 
-    @Override public void exitStart(MiLenguajeParser.StartContext ctx) {
-        entityDict.forEach((key, value) -> System.out.println(key + ":" + Arrays.toString(value.get(4))));
+    public void generateEntity(String genEntityName)  {
+
+        // Imports
+
+        addText("import {\n");
+        indent(true);
+        addText("BaseEntity,\n");
+        addText("Entity,\n");
+        addText( String.join(",\n"+ "\t".repeat(indentCounter), entityImports.get(genEntityName))+ "\n");
+        indent(false);
+        addText("} from \"typeorm\"\n");
+
+
+        // Entity Declaration
+        addText("@Entity(\"" + genEntityName.toLowerCase()  + "\")\n");
+        addText("export class " + genEntityName + " extends BaseEntity {\n");
+        indent(true);
+
+        // Start of Entity Logic
+        ArrayList <String[]> entityList = entityDict.get(genEntityName);
+        for (int i = 0; i <entityList.size(); i++ ) {
+            String columnString = "@";
+            String[] genPropPairValues = entityList.get(i);
+            if (genPropPairValues[6].equals("true")) {
+                columnString+= "Primary";
+            }
+            if (genPropPairValues[4].equals("true")){
+                columnString+= "Generated";
+            }
+            columnString += "Column({";
+            columnString+=((genPropPairValues[1].isBlank()) ? "" : "length : "+  genPropPairValues[1] + ","); ;
+            columnString+=((genPropPairValues[2].isBlank()) ? "" : "nullable : true");
+            columnString+=((genPropPairValues[3].isBlank()) ? "" : "default : " + genPropPairValues[3] + ",");
+            columnString+=((genPropPairValues[5].isBlank()) ? "" : "unique : true");
+            columnString+=("})\n");
+            addText(columnString);
+            addText( genPropPairValues[0] + " : " + genPropPairValues[7] + "\n");
+
+        }
+
+        // End of Entity Logic
+        indent(false);
+        addText("}\n");
+
+
+        // File Creation
+        try{
+            PrintWriter writer = new PrintWriter("tsGen/entities/" +  genEntityName + ".entity.ts", "UTF-8");
+            writer.println(text);
+            writer.close();
+            // Resets used values
+            text  = "";
+        } catch (Exception err){
+            System.out.println("File could not be created:  " + err);
+
+        }
+
     }
 
-    public void generateEntity( MiLenguajeParser.DefinablesContext ctx)  {
-        entityName = ctx.getChild(1).getText();
-        addText("@Entity(\"" + entityName.toLowerCase()  + "\")\n");
-        addText("export class " + entityName + " extends BaseEntity {\n");
-        // Entity Logic
-        entityDict.put(entityName, new ArrayList<>());
-    }
+
 
     @Override public void enterDefinables(MiLenguajeParser.DefinablesContext ctx){
         if (ctx.ENTITY() != null){
-            generateEntity(ctx);
+            entityName = ctx.NAME(0).getText();
+            entityDict.put(entityName, new ArrayList<>());
+            entityImports.put(entityName, new HashSet<>());
         }
     }
 
     @Override public void exitDefinables(MiLenguajeParser.DefinablesContext ctx){
 
         if (ctx.ENTITY() != null){
-            // End of Entity Logic
-            addText("}\n");
-
-
-            // File Creation
-            try{
-                PrintWriter writer = new PrintWriter("tsGen/entities/" +  entityName + ".entity.ts", "UTF-8");
-                writer.println(entityText);
-                writer.close();
-            } catch (Exception err){
-                System.out.println("File could not be created:  " + err);
-
-            }
-            importList = new HashSet<String>();
             entityName = "";
-            entityText  = "";
-
+            generateEntity("User");
         }
     }
 
@@ -95,62 +141,30 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         }
 
-    @Override public void exitPropObj(MiLenguajeParser.PropObjContext ctx) {
-        addText("@");
-
-        if (propPairValues[6].equals("true")) {
-            addText("Primary");
-        }
-        if (propPairValues[4].equals("true")){
-            addText("Generated");
-        }
-        addText("Column({");
-        addText((propPairValues[1].isBlank()) ? "" : "length : "+  propPairValues[1] + ","); ;
-        addText((propPairValues[2].isBlank()) ? "" : "nullable : true");
-        addText((propPairValues[3].isBlank()) ? "" : "default : " + propPairValues[3] + ",");
-        addText((propPairValues[5].isBlank()) ? "" : "unique : true");
-        addText("})\n");
-        addText("\t"+ columnName.toLowerCase() + ":" + propPairValues[7] + "\n");
-        propPairValues[0] = columnName.toLowerCase();
-        addPropertyToDict();
-
-    }
 
 
-    @Override public void exitPropDef(MiLenguajeParser.PropDefContext ctx) {
-        if (ctx.types() != null){
-            propPairValues[0] = ctx.NAME().getText().toLowerCase();
-            propPairValues[7] = ctx.types().getText();
-            addPropertyToDict();
-            addText("@Column()\n");
-            addText("\t"+ ctx.NAME().getText() + ":" + ctx.types().getText() + "\n");
-        }
-
-    }
-
-    @Override public void exitPropDefRecursion(MiLenguajeParser.PropDefRecursionContext ctx) {
-        if (ctx.types() != null){
-            propPairValues[0] = ctx.NAME().getText().toLowerCase();
-            propPairValues[7] = ctx.types().getText();
-            addPropertyToDict();
-            addText("@Column()\n");
-            addText("\t"+ ctx.NAME().getText() + ":" + ctx.types().getText() + "\n");
-        }
-
-    }
 
     @Override public void enterPropDef(MiLenguajeParser.PropDefContext ctx) {
+        Arrays.fill(propPairValues,"");
         columnName = ctx.NAME().getText();
-        Arrays.fill(propPairValues, "");
+        propPairValues[0] = ctx.NAME().getText().toLowerCase();
+        if (ctx.types() != null) {
+            propPairValues[7] = ctx.types().getText();
+        }
 
     }
 
     @Override public void enterPropDefRecursion(MiLenguajeParser.PropDefRecursionContext ctx) {
-        if (ctx.NAME() != null) {
-            columnName = ctx.NAME().getText();
+        String columnStringImport = "";
+        if (propPairValues[6].equals("true")){
+            columnStringImport += "Primary";
         }
-
-
+        if (propPairValues[4].equals("true")){
+            columnStringImport += "Generated";
+        }
+        columnStringImport+= "Column";
+        entityImports.get(entityName).add(columnStringImport);
+        addPropertyToDict();
     }
 
 
