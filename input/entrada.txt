@@ -10,7 +10,7 @@ New Entity User {
         }
         ,calificacion2 : {
                  type: number,
-                 validate: {  max : 5},
+                 validate: {  max : 5, min : 4,isEmail},
                  length: 10,
                  primary,
                  default : "a"

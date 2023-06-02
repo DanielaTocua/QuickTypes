@@ -134,14 +134,18 @@ public class EntityGen extends MiLenguajeBaseListener {
             case "primary":
                 propPairValues[6] = "true";
                 break;
-            case "validate":
-                propPairValues[8] = "@"+ctx.validationObj().getText();
 
-                break;
+
 
             }
 
         }
+    @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
+        propPairValues[8] = propPairValues[8] + "@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ";
+        System.out.println(propPairValues[8]);
+
+    }
+
 
 
 
