@@ -134,6 +134,10 @@ public class EntityGen extends MiLenguajeBaseListener {
             case "primary":
                 propPairValues[6] = "true";
                 break;
+            case "validate":
+                propPairValues[8] = "@"+ctx.validationObj().getText();
+
+                break;
 
             }
 
