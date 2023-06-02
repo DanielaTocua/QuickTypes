@@ -2,7 +2,7 @@ New Entity User {
     properties {
         calificacion : {
         type: number,
-        validate: {  max : 5},
+        validate: {  Max : 5},
         length: 10,
         primary,
         default : "a"
@@ -10,7 +10,7 @@ New Entity User {
         }
         ,calificacion2 : {
                  type: number,
-                 validate: {  max : 5, min : 4,isEmail},
+                 validate: {  Max : 5, Min : 4,IsEmail},
                  length: 10,
                  primary,
                  default : "a"

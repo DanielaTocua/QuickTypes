@@ -7,6 +7,8 @@ import java.util.*;
 public class EntityGen extends MiLenguajeBaseListener {
     Map<String, ArrayList<String[]>> entityDict = new HashMap<String, ArrayList<String[]>>();
 
+    Map <String, HashMap<String, HashSet<String>>> entityValidations = new HashMap<String, HashMap<String, HashSet<String>>>();
+
     Map <String, Set<String>> entityImports = new HashMap<String, Set<String>>();
 
     String entityName;
@@ -99,6 +101,7 @@ public class EntityGen extends MiLenguajeBaseListener {
             entityName = ctx.NAME(0).getText();
             entityDict.put(entityName, new ArrayList<>());
             entityImports.put(entityName, new HashSet<>());
+            entityValidations.put(entityName, new HashMap<>());
         }
     }
 
@@ -140,9 +143,15 @@ public class EntityGen extends MiLenguajeBaseListener {
             }
 
         }
+
+
     @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
-        propPairValues[8] = propPairValues[8] + "@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ";
-        System.out.println(propPairValues[8]);
+        if (MiLenguajeParser.ruleNames[ctx.getParent().getParent().getRuleIndex()].equals("propPairs")){
+            entityValidations.get(entityName).get(columnName).add("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ");
+            System.out.println(entityValidations.get(entityName).get(columnName));
+        }
+
+
 
     }
 
@@ -154,6 +163,7 @@ public class EntityGen extends MiLenguajeBaseListener {
         Arrays.fill(propPairValues,"");
         columnName = ctx.NAME().getText();
         propPairValues[0] = ctx.NAME().getText().toLowerCase();
+        entityValidations.get(entityName).put(columnName, new HashSet<>());
         if (ctx.types() != null) {
             propPairValues[7] = ctx.types().getText();
         }

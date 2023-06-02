@@ -83,16 +83,16 @@ validationObj
    ;
 
 validationPairs
-   : 'isEmail'
-   | 'max' ':' INT
-   | 'min' ':' INT
-   | 'isPositive'
-   | 'isNegative'
-   | 'isBooleanString'
-   | 'isDateString'
-   | 'isNumberString'
-   | 'isAlpha'
-   | 'isAlphanumeric'
+   : 'IsEmail'
+   | 'Max' ':' INT
+   | 'Min' ':' INT
+   | 'IsPositive'
+   | 'IsNegative'
+   | 'IsBooleanString'
+   | 'IsDateString'
+   | 'IsNumberString'
+   | 'IsAlpha'
+   | 'IsAlphanumeric'
    ;
 
 types

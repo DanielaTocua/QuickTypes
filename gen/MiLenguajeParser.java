@@ -46,9 +46,9 @@ public class MiLenguajeParser extends Parser {
 			"'none'", "','", "'relation'", "'onDelete'", "'nullable'", "'restrict'", 
 			"'cascade'", "'setNull'", "'OneToOne'", "'OneToMany'", "'ManyToOne'", 
 			"'ManyToMany'", "'type'", "'length'", "'default'", "'generated'", "'unique'", 
-			"'validate'", "'primary'", "'isEmail'", "'max'", "'min'", "'isPositive'", 
-			"'isNegative'", "'isBooleanString'", "'isDateString'", "'isNumberString'", 
-			"'isAlpha'", "'isAlphanumeric'", "'number'", "'string'", "'boolean'", 
+			"'validate'", "'primary'", "'IsEmail'", "'Max'", "'Min'", "'IsPositive'", 
+			"'IsNegative'", "'IsBooleanString'", "'IsDateString'", "'IsNumberString'", 
+			"'IsAlpha'", "'IsAlphanumeric'", "'number'", "'string'", "'boolean'", 
 			"'['", "']'", "'null'", "'New'", "'Entity'", "'DTO'", "'properties'", 
 			"'relations'"
 		};
