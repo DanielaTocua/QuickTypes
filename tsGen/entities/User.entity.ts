@@ -13,7 +13,7 @@ export class User extends BaseEntity {
 	calificacion : number
 	@PrimaryColumn({length : 10,default : "a",})
 	calificacion2 : number
-	@Column({})
+	@PrimaryColumn({length : 10,default : "a",})
 	username : string
 	@Column({})
 	email : string

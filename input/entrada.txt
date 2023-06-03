@@ -17,8 +17,6 @@ New Entity Profile {
 
                  },
 
-
-        username: string,
         email : string,
         password : string
     }
@@ -52,7 +50,14 @@ New Entity User {
                  },
 
 
-        username: string,
+        username : {
+                         type: string,
+                         validate: {  Max : 6, Min : 4,IsEmail},
+                         length: 10,
+                         primary,
+                         default : "a"
+
+                         },
         email : string,
         password : string
     }
@@ -66,7 +71,13 @@ New Entity User {
 }
 
     New User DTO Login {
-    strict username : { Min : 3, Max : 2}}
+    strict username : { Min : 3, Max : 2},
+    flexible calificacion : { Min : 3, Max : 2}}
+
+    New User DTO Out {
+        strict username : { Min : 3, Max : 2},
+        flexible calificacion : { Min : 3, Max : 2}}
+
 
 
 

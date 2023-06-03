@@ -14,8 +14,6 @@ export class Profile extends BaseEntity {
 	@PrimaryColumn({length : 10,default : "a",})
 	calificacion2 : number
 	@Column({})
-	username : string
-	@Column({})
 	email : string
 	@Column({})
 	password : string

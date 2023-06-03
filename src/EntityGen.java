@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Array;
+import java.io.FileWriter;
+
 import java.util.*;
 
 public class EntityGen extends MiLenguajeBaseListener {
@@ -17,6 +19,8 @@ public class EntityGen extends MiLenguajeBaseListener {
 
 
     String entityName;
+    String dtoName;
+    String dtoName2;
     String text  = "";
     String columnName = "";
 
@@ -117,6 +121,18 @@ public class EntityGen extends MiLenguajeBaseListener {
         }
 
     }
+    public void generateDTO(String genDTOName)  {
+        try{
+            PrintWriter writer = new PrintWriter(new FileWriter("tsGen/dtos/" + genDTOName + ".dto.ts", true));
+            writer.println(text);
+            writer.close();
+            // Resets used values
+            text  = "";
+        } catch (Exception err){
+            System.out.println("File could not be created:  " + err);
+
+        }
+    }
 
 
 
@@ -131,6 +147,75 @@ public class EntityGen extends MiLenguajeBaseListener {
             entityValidations.put(entityName, new HashMap<>());
 
         }
+        if(ctx.DTO() != null){
+            addText( "export class "+ctx.getChild(0).getText()+ctx.getChild(2).getText()+ctx.getChild(1).getText()+" {\n");
+            dtoName=ctx.getChild(0).getText();
+        }
+    }
+    @Override public void enterDtoDef(MiLenguajeParser.DtoDefContext ctx) {
+   dtoName2=ctx.NAME().getText();
+
+    }
+
+    @Override public void exitDtoDef(MiLenguajeParser.DtoDefContext ctx) {
+
+
+    }
+
+    @Override public void enterDtoOpc(MiLenguajeParser.DtoOpcContext ctx) {
+
+        addText("@Expose()\n");
+        if (ctx.getText().equals("strict")) {
+            addText("@IsNotEmpty\n");
+            HashMap<String, HashSet<String>> innerMap = entityValidations.get(dtoName);
+
+            if (innerMap != null) {
+
+                HashSet<String> innerSet = innerMap.get(dtoName2);
+
+                if (innerSet != null) {
+
+                    for (String value : innerSet) {
+                        addText(value + "\n");
+                    }
+                }
+            }
+
+        }
+        if (ctx.getText().equals("flexible")) {
+            addText("@IsOptional\n");
+            HashMap<String, HashSet<String>> innerMap = entityValidations.get(dtoName);
+
+            if (innerMap != null) {
+
+                HashSet<String> innerSet = innerMap.get(dtoName2);
+
+                if (innerSet != null) {
+
+                    for (String value : innerSet) {
+                        addText(value + "\n");
+                    }
+                }
+            }
+
+        }
+    }
+    @Override public void enterDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx) {
+        ArrayList<String[]> innerList = entityDict.get(dtoName);
+        for (int i = 0; i < innerList.size(); i++)
+            if (innerList.get(i)[0].equals(dtoName2)) {
+                if(innerList.get(i)[7].equals("string")){
+                    addText("@IsString\n");
+                }
+                addText(dtoName2 + ": " + innerList.get(i)[7]+";\n");
+            }
+        if(ctx.dtoDef()!=null){
+            addText("\n\n");
+        }
+
+    }
+    @Override public void exitDtoOptions(MiLenguajeParser.DtoOptionsContext ctx) {
+
     }
 
     @Override public void exitDefinables(MiLenguajeParser.DefinablesContext ctx){
@@ -138,6 +223,10 @@ public class EntityGen extends MiLenguajeBaseListener {
         if (ctx.ENTITY() != null){
             generateEntity(entityName);
             entityName = "";
+        }
+        if(ctx.DTO()!=null){
+            addText("}");
+            generateDTO(ctx.getChild(0).getText());
         }
     }
 
@@ -176,6 +265,9 @@ public class EntityGen extends MiLenguajeBaseListener {
     @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
         if (MiLenguajeParser.ruleNames[ctx.getParent().getParent().getRuleIndex()].equals("propPairs")){
             entityValidations.get(entityName).get(columnName).add("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ");
+
+        }else{
+            addText("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") \n");
 
         }
 
