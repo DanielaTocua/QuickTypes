@@ -7,8 +7,8 @@ import {
 	Column
 } from "typeorm"
 import { Profile} from "./Profile.entity"
-@Entity("user")
-export class User extends BaseEntity {
+@Entity("profile")
+export class Profile extends BaseEntity {
 	@PrimaryColumn({length : 10,default : "a",})
 	calificacion : number
 	@PrimaryColumn({length : 10,default : "a",})
@@ -20,7 +20,7 @@ export class User extends BaseEntity {
 	@Column({})
 	password : string
 	
-	@OneToOne((type) =>Profile, {onDelete :  "CASCADE" , nullable : true})
+	@OneToOne((type) =>Profile, {nullable : true})
 	@JoinColumn({ name: "idUser", referencedColumnName: "idProfile" })
 	profile : Profile
 }

@@ -11,10 +11,19 @@ definition
 
 definables
    : ENTITY NAME '{' entityDef '}'
-   | DTO 'for' NAME NAME '{' dtoDef '}'
+   | NAME DTO NAME '{' dtoDef '}'
    ;
 dtoDef
-   :'base' ':' dtoOpc
+   : dtoOpc NAME  ':' dtoOptions  dtoDefRecursion
+   ;
+
+dtoDefRecursion
+   : ',' dtoDef
+   |
+   ;
+
+dtoOptions
+   : '{' validationPairs (',' validationPairs)* '}'
    ;
 dtoOpc
    : 'strict'
@@ -22,12 +31,17 @@ dtoOpc
    | 'none'
    ;
 entityDef
-   : PROPERTIES '{' propDef '}' RELATIONS relDef
+   : PROPERTIES '{' propDef '}' RELATIONS '{' relDef '}'
    | PROPERTIES '{' propDef '}'
    ;
 
-relDef
-   : '{' NAME ':' relObj '}'
+relDef // relatedTable - columnName - relatedColumnName
+   :  relationTypes NAME '(' NAME ',' NAME  ')' ':' relObj relDefRecursion
+   ;
+
+relDefRecursion
+   : ',' relDef
+   |
    ;
 
 relObj
@@ -35,9 +49,8 @@ relObj
    ;
 
 relPairs
-   : 'relation' ':' relationTypes
-   | 'onDelete' ':' onDeleteTypes
-   | 'nullable' ':' BOOLEAN
+   : 'onDelete' ':' onDeleteTypes
+   | 'nullable'
    ;
 onDeleteTypes
    : 'restrict'

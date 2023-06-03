@@ -1,4 +1,4 @@
-New Entity User {
+New Entity Profile {
     properties {
         calificacion : {
         type: number,
@@ -10,7 +10,7 @@ New Entity User {
         }
         ,calificacion2 : {
                  type: number,
-                 validate: {  Max : 5, Min : 4,IsEmail},
+                 validate: {  Max : 6, Min : 4,IsEmail},
                  length: 10,
                  primary,
                  default : "a"
@@ -23,8 +23,51 @@ New Entity User {
         password : string
     }
 
+    relations {
+    OneToOne Profile (idUser, idProfile) : {
+    nullable
+    }}
+
 
 }
-New DTO for user Login{
-base : strict
+
+
+New Entity User {
+    properties {
+        calificacion : {
+        type: number,
+        validate: {  Max : 5},
+        length: 10,
+        primary,
+        default : "a"
+
+        }
+        ,calificacion2 : {
+                 type: number,
+                 validate: {  Max : 6, Min : 4,IsEmail},
+                 length: 10,
+                 primary,
+                 default : "a"
+
+                 },
+
+
+        username: string,
+        email : string,
+        password : string
+    }
+
+    relations {
+    OneToOne Profile (idUser, idProfile) : {
+    nullable,
+    onDelete: cascade
+    }}
+
 }
+
+    New User DTO Login {
+    strict username : { Min : 3, Max : 2}}
+
+
+
+

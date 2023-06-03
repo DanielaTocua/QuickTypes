@@ -64,6 +64,30 @@ public class MiLenguajeBaseListener implements MiLenguajeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDtoOptions(MiLenguajeParser.DtoOptionsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDtoOptions(MiLenguajeParser.DtoOptionsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDtoOpc(MiLenguajeParser.DtoOpcContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -95,6 +119,18 @@ public class MiLenguajeBaseListener implements MiLenguajeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRelDef(MiLenguajeParser.RelDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterRelDefRecursion(MiLenguajeParser.RelDefRecursionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitRelDefRecursion(MiLenguajeParser.RelDefRecursionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

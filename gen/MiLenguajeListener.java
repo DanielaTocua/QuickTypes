@@ -47,6 +47,26 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 */
 	void exitDtoDef(MiLenguajeParser.DtoDefContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#dtoDefRecursion}.
+	 * @param ctx the parse tree
+	 */
+	void enterDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#dtoDefRecursion}.
+	 * @param ctx the parse tree
+	 */
+	void exitDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#dtoOptions}.
+	 * @param ctx the parse tree
+	 */
+	void enterDtoOptions(MiLenguajeParser.DtoOptionsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#dtoOptions}.
+	 * @param ctx the parse tree
+	 */
+	void exitDtoOptions(MiLenguajeParser.DtoOptionsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#dtoOpc}.
 	 * @param ctx the parse tree
 	 */
@@ -76,6 +96,16 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelDef(MiLenguajeParser.RelDefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#relDefRecursion}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelDefRecursion(MiLenguajeParser.RelDefRecursionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#relDefRecursion}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelDefRecursion(MiLenguajeParser.RelDefRecursionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#relObj}.
 	 * @param ctx the parse tree

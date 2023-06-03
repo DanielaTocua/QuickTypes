@@ -34,6 +34,18 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDtoDef(MiLenguajeParser.DtoDefContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#dtoDefRecursion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#dtoOptions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDtoOptions(MiLenguajeParser.DtoOptionsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#dtoOpc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -51,6 +63,12 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRelDef(MiLenguajeParser.RelDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#relDefRecursion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelDefRecursion(MiLenguajeParser.RelDefRecursionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#relObj}.
 	 * @param ctx the parse tree
