@@ -1,17 +1,39 @@
 import { Expose } from "class-transformer";
 import {
-PrimaryGeneratedColumn,
+IsEmail,
 IsNotEmpty,
-Column,
 IsOptional,
+MinLength,
 } from "class-validator";
+export class UserUpdateDTO {
+	@IsOptional()
+	@Expose()
+	password : string
+
+	@IsOptional()
+	@IsEmail() 
+	@Expose()
+	email : string
+
+	@IsOptional()
+	@MinLength(5) 
+	@Expose()
+	username : string
+
+}
 export class UserCreationDTO {
-@IsNotEmpty()
-password : string
-@IsNotEmpty()
-@IsEmail() 
-email : string
-@IsNotEmpty()
-@MinLength(5) 
-username : string
+	@IsNotEmpty()
+	@Expose()
+	password : string
+
+	@IsNotEmpty()
+	@IsEmail() 
+	@Expose()
+	email : string
+
+	@IsNotEmpty()
+	@MinLength(5) 
+	@Expose()
+	username : string
+
 }

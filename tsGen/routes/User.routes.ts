@@ -5,8 +5,8 @@ import { UserCreationDTO, UserUpdateDTO } from "../dtos/User.baseDto";
 import dtoValidationMiddleware from "../middlewares/dtoValidation.middleware";
 
 const router = express.Router();
-router.put("/:id", dtoValidationMiddleware(UserUpdateDTO), UserController.update);
-router.delete("/:id", UserController.delete);
+router.delete("/:id/:username", UserController.delete);
+router.put("/:id/:username", dtoValidationMiddleware(UserUpdateDTO), UserController.update);
+router.get("/:id/:username", UserController.get);
 router.post("/", dtoValidationMiddleware(UserCreationDTO), UserController.create);
-router.get("/:id", UserController.get);
 export default router;

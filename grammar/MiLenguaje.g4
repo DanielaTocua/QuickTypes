@@ -105,6 +105,8 @@ validationPairs
    | 'IsNumberString'
    | 'IsAlpha'
    | 'IsAlphanumeric'
+   | 'MinLength' ':' INT
+   | 'MaxLength' ':' INT
    ;
 
 types

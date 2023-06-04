@@ -262,7 +262,10 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         if (ctx.ENTITY() != null){
             generateEntity(entityName);
+            CRUDGen newGen = new CRUDGen(entityName, entityDict.get(entityName), entityValidations.get(entityName));
+            newGen.generate(Set.of(CRUDGen.SERVICE.CREATE, CRUDGen.SERVICE.READ, CRUDGen.SERVICE.UPDATE, CRUDGen.SERVICE.DELETE));
             entityName = "";
+
         }
         if(ctx.DTO()!=null){
             generateDTO(ctx.NAME(0).getText());
@@ -290,7 +293,7 @@ public class EntityGen extends MiLenguajeBaseListener {
                 propPairValues[4] = "true";
                 break;
             case "unique":
-                propPairValues[5] = ctx.basicValues().getText();
+                propPairValues[5] ="true";
                 break;
             case "primary":
                 propPairValues[6] = "true";
@@ -301,7 +304,6 @@ public class EntityGen extends MiLenguajeBaseListener {
     @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
         if (MiLenguajeParser.ruleNames[ctx.getParent().getParent().getRuleIndex()].equals("propPairs")){
             entityValidations.get(entityName).get(columnName).add("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ");
-
         }else{
             String validation = ctx.getChild(0).getText();
             String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(entityDTOs.get(entityName).get(dtoName).size() - 1);
