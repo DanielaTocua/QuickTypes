@@ -1,4 +1,4 @@
-// Generated from C:/Users/junio/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
+// Generated from C:/Users/Usuario/IdeaProjects/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;

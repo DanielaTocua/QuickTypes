@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.util.*;
 
 public class EntityGen extends MiLenguajeBaseListener {
+    // Entities (k1 = entityName, <entityColumns>, [propertiesOfColumns]
     Map<String, ArrayList<String[]>> entityDict = new HashMap<String, ArrayList<String[]>>();
 
     Map<String, HashMap<String, String[]>>  entityRelations = new HashMap<>();
@@ -17,16 +18,17 @@ public class EntityGen extends MiLenguajeBaseListener {
     //DTOs (k1 = entityName, k2 = columnName, v = set de validaciones)
     Map <String, HashMap<String, HashSet<String>>> entityValidations = new HashMap<String, HashMap<String, HashSet<String>>>();
 
+    // DTOs (k1 = entityName, k2 = DTO name, k3 = DTO properties)
+    Map <String, HashMap<String, ArrayList<String[]>>> entityDTOs = new HashMap<String, HashMap<String, ArrayList<String[]>>>();
+    Map <String, HashMap<String, HashSet<String>>> DTOsImports = new HashMap<String, HashMap<String, HashSet<String>>>();
 
     String entityName;
     String dtoName;
     String dtoName2;
     String text  = "";
     String columnName = "";
-
     String relationName;
     Integer indentCounter = 0;
-
 
 
     public void indent(Boolean add){
@@ -58,7 +60,6 @@ public class EntityGen extends MiLenguajeBaseListener {
             addText("import { "  + entityToImport + "} from \"./" + entityToImport+ ".entity\"\n");
 
         }
-
 
         // Entity Declaration
         addText("@Entity(\"" + genEntityName.toLowerCase()  + "\")\n");
@@ -122,8 +123,97 @@ public class EntityGen extends MiLenguajeBaseListener {
 
     }
     public void generateDTO(String genDTOName)  {
+
+        // Imports
+        /*addText("import {\n");
+        indent(true);
+        addText("Expose,\n");
+        //addText( String.join(",\n"+ "\t".repeat(indentCounter), entityImports.get(genEntityName)[0])+ "\n");
+        indent(false);
+        addText("} from \" class-transformer \"\n");*/
+
+        //
+
+        addText("export class "+entityName+dtoName+"DTO {\n");
+        indent(true);
+
+        for (int a = 0; a < entityDTOs.get(entityName).get(dtoName).size(); a++) {
+            String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(a);
+            for (int i = 0; i < dtoProperties.length ; i++ ){
+                String dtoProperty = dtoProperties[i];
+            if (i == 0){
+                addText("@Expose()\n");
+                if (dtoProperty.equals("strict")) {
+                    addText("@IsNotEmpty()\n");
+                    HashMap<String, HashSet<String>> innerMap = entityValidations.get(entityName);
+                    if (innerMap != null) {
+                        HashSet<String> innerSet = innerMap.get(dtoName);
+                        if (innerSet != null) {
+                            for (String value : innerSet) {
+                                addText(value + "\n");
+                            }
+                        }
+                    }
+
+                }
+                if (dtoProperty.equals("flexible")) {
+                    addText("@IsOptional()\n");
+                    HashMap<String, HashSet<String>> innerMap = entityValidations.get(entityName);
+                    if (innerMap != null) {
+                        HashSet<String> innerSet = innerMap.get(dtoName);
+                        if (innerSet != null) {
+                            for (String value : innerSet) {
+                                addText(value + "\n");
+                            }
+                        }
+                    }
+
+                }
+            }
+            else if (i == 2){
+                addText("@Max("+dtoProperty+")\n");
+            }else if (i == 3){
+                addText("@Min("+dtoProperty+")\n");
+            }else if (i == 11){
+                for (String[] genPropPairValues:entityDict.get(entityName)){
+                    if (genPropPairValues[0].equals(dtoProperty)){
+                        switch (genPropPairValues[7]){
+                            case "string":
+                                addText("@IsString()\n");
+                                break;
+                            case "number":
+                                addText("@IsNumber()\n");
+                                break;
+                            case "boolean":
+                                addText("@IsBoolean()\n");
+                                break;
+                        }
+                        addText(dtoProperty + " : " + genPropPairValues[7] + ";\n\n");
+                    }
+
+                }
+                //addText( genPropPairValues[0] + " : " + genPropPairValues[7] + "\n");
+
+
+            }else if (dtoProperty!=""){
+                addText("@"+dtoProperty+"()\n");
+            }
+        }
+        }
+        indent(false);
+        addText("}");
+
         try{
+            File file = new File("tsGen/dtos/" + genDTOName + ".dto.ts");
+            if (!file.exists()){
+                //System.out.println("no existe");
+                PrintWriter writer = new PrintWriter(new FileWriter("tsGen/dtos/" + genDTOName + ".dto.ts", true));
+                writer.print("imports");
+            }else{
+                //System.out.println("existe");
+            }
             PrintWriter writer = new PrintWriter(new FileWriter("tsGen/dtos/" + genDTOName + ".dto.ts", true));
+
             writer.println(text);
             writer.close();
             // Resets used values
@@ -134,9 +224,8 @@ public class EntityGen extends MiLenguajeBaseListener {
         }
     }
 
-
-
     @Override public void enterDefinables(MiLenguajeParser.DefinablesContext ctx){
+
         if (ctx.ENTITY() != null){
             entityName = ctx.NAME(0).getText();
             entityDict.put(entityName, new ArrayList<>());
@@ -145,76 +234,27 @@ public class EntityGen extends MiLenguajeBaseListener {
             entityImports.get(entityName)[0] = new HashSet<String>();
             entityImports.get(entityName)[1] = new HashSet<String>();
             entityValidations.put(entityName, new HashMap<>());
-
         }
         if(ctx.DTO() != null){
-            addText( "export class "+ctx.getChild(0).getText()+ctx.getChild(2).getText()+ctx.getChild(1).getText()+" {\n");
-            dtoName=ctx.getChild(0).getText();
+            //addText( "export class "+ctx.getChild(0).getText()+ctx.getChild(2).getText()+ctx.getChild(1).getText()+" {\n");
+            entityName = ctx.NAME(0).getText();
+            dtoName = ctx.NAME(1).getText();
+            //dtoName = ctx.getChild(0).getText();
+            // entityName : {}
+            entityDTOs.put(entityName, new HashMap<>());
+            entityDTOs.get(entityName).put(dtoName, new ArrayList<>());
+            //entityDTOs.get(entityName).put(dtoName,new String[12]);
+
         }
     }
     @Override public void enterDtoDef(MiLenguajeParser.DtoDefContext ctx) {
-   dtoName2=ctx.NAME().getText();
+        String dtoPropertyName = ctx.NAME().getText();
+        entityDTOs.get(entityName).get(dtoName).add(new String[12]);
+        String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(entityDTOs.get(entityName).get(dtoName).size() - 1);
+        Arrays.fill(dtoProperties,"");
+        dtoProperties[0] = ctx.dtoOpc().getText();
+        dtoProperties[11] = dtoPropertyName;
 
-    }
-
-    @Override public void exitDtoDef(MiLenguajeParser.DtoDefContext ctx) {
-
-
-    }
-
-    @Override public void enterDtoOpc(MiLenguajeParser.DtoOpcContext ctx) {
-
-        addText("@Expose()\n");
-        if (ctx.getText().equals("strict")) {
-            addText("@IsNotEmpty\n");
-            HashMap<String, HashSet<String>> innerMap = entityValidations.get(dtoName);
-
-            if (innerMap != null) {
-
-                HashSet<String> innerSet = innerMap.get(dtoName2);
-
-                if (innerSet != null) {
-
-                    for (String value : innerSet) {
-                        addText(value + "\n");
-                    }
-                }
-            }
-
-        }
-        if (ctx.getText().equals("flexible")) {
-            addText("@IsOptional\n");
-            HashMap<String, HashSet<String>> innerMap = entityValidations.get(dtoName);
-
-            if (innerMap != null) {
-
-                HashSet<String> innerSet = innerMap.get(dtoName2);
-
-                if (innerSet != null) {
-
-                    for (String value : innerSet) {
-                        addText(value + "\n");
-                    }
-                }
-            }
-
-        }
-    }
-    @Override public void enterDtoDefRecursion(MiLenguajeParser.DtoDefRecursionContext ctx) {
-        ArrayList<String[]> innerList = entityDict.get(dtoName);
-        for (int i = 0; i < innerList.size(); i++)
-            if (innerList.get(i)[0].equals(dtoName2)) {
-                if(innerList.get(i)[7].equals("string")){
-                    addText("@IsString\n");
-                }
-                addText(dtoName2 + ": " + innerList.get(i)[7]+";\n");
-            }
-        if(ctx.dtoDef()!=null){
-            addText("\n\n");
-        }
-
-    }
-    @Override public void exitDtoOptions(MiLenguajeParser.DtoOptionsContext ctx) {
 
     }
 
@@ -225,8 +265,7 @@ public class EntityGen extends MiLenguajeBaseListener {
             entityName = "";
         }
         if(ctx.DTO()!=null){
-            addText("}");
-            generateDTO(ctx.getChild(0).getText());
+            generateDTO(ctx.NAME(0).getText());
         }
     }
 
@@ -256,28 +295,62 @@ public class EntityGen extends MiLenguajeBaseListener {
             case "primary":
                 propPairValues[6] = "true";
                 break;
-
             }
-
         }
-
 
     @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
         if (MiLenguajeParser.ruleNames[ctx.getParent().getParent().getRuleIndex()].equals("propPairs")){
             entityValidations.get(entityName).get(columnName).add("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ");
 
         }else{
-            addText("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") \n");
+            String validation = ctx.getChild(0).getText();
+            String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(entityDTOs.get(entityName).get(dtoName).size() - 1);
+
+            String toAdd = "";
+            int index = 1;
+
+            switch (validation){
+                case "IsEmail":
+                    index = 1;
+
+                    break;
+                case "Max":
+                    index = 2;
+                    toAdd = ctx.INT().getText();
+                    break;
+                case "Min":
+                    index = 3;
+                    toAdd = ctx.INT().getText();
+                    break;
+                case "IsPositive":
+                    index = 4;
+                    break;
+                case "IsNegative":
+                    index = 5;
+                    break;
+                case "IsBooleanString":
+                    index = 6;
+                    break;
+                case "IsDateString":
+                    index = 7;
+                    break;
+                case "IsNumberString":
+                    index = 8;
+                    break;
+                case "IsAlpha":
+                    index = 9;
+                    break;
+                case "IsAlphanumeric":
+                    index = 10;
+                    break;
+            }
+            dtoProperties[index] = toAdd == "" ? validation : toAdd;
+
+            //addText("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") \n");
+
 
         }
-
-
-
     }
-
-
-
-
 
     @Override public void enterPropDef(MiLenguajeParser.PropDefContext ctx) {
         columnName = ctx.NAME().getText();
@@ -335,20 +408,7 @@ public class EntityGen extends MiLenguajeBaseListener {
                 relPairValues[4] = "true";
                 break;
         }
-
-
-
-
-
-
-
-
-
     }
-
-
-
-
 }
 
 

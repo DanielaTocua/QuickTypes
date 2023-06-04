@@ -72,11 +72,13 @@ New Entity User {
 
     New User DTO Login {
     strict username : { Min : 3, Max : 2},
-    flexible calificacion : { Min : 3, Max : 2}}
+    flexible calificacion : { Min : 3, Max : 2}
+    }
 
     New User DTO Out {
-        strict username : { Min : 3, Max : 2},
-        flexible calificacion : { Min : 3, Max : 2}}
+        strict username : { Min : 8, Max : 7, IsEmail},
+        flexible calificacion : { Min : 3, Max : 2}
+        }
 
 
 
