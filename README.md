@@ -109,10 +109,12 @@ New Entity Animal {
 ```
 También se pueden definir DTOs personalizados, para generarlos futuramente, de la siguiente manera 
 
+```
 New Animal DTO ToAdopt {
     strict age: {Max: 8, Min:2},
     flexible breed: {IsAlphanumeric}
 }
+```
 
 
 En este paso se usan 3 palabras reservadas:
