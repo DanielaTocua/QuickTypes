@@ -22,7 +22,13 @@ New Entity Animal {
 
     }
 }
+New Animal DTO ToAdopt {
+    strict breed: {MinLength: 2}
+}
 
+Generate Entity Person
+Generate Entity Animal
+Generate Animal DTO ToAdopt
 
 
 

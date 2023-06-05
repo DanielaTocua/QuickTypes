@@ -45,6 +45,15 @@ public class EntityGen extends MiLenguajeBaseListener {
 
     }
 
+    public void enterGeneration(MiLenguajeParser.GenerationContext ctx) {
+        if (ctx.ENTITY() != null){
+            generateEntity(ctx.NAME(0).getText());
+        }
+        if (ctx.DTO() != null){
+            generateDTO(ctx.NAME(0).getText(), ctx.NAME(1).getText());
+        }
+
+    }
     public void generateEntity(String genEntityName) {
         // Imports
         addText("import {\n");
@@ -90,8 +99,8 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         addText("\n");
 
-        for (String entityToRelate : entityRelations.get(entityName).keySet()) {
-            String[] relConfig = entityRelations.get(entityName).get(entityToRelate);
+        for (String entityToRelate : entityRelations.get(genEntityName).keySet()) {
+            String[] relConfig = entityRelations.get(genEntityName).get(entityToRelate);
             String configString = "";
             if (relConfig[3] != null) {
                 configString += "onDelete :  \"" + relConfig[3] + "\" , ";
@@ -161,9 +170,9 @@ public class EntityGen extends MiLenguajeBaseListener {
                         }
 
                     }
-                } else if (i == 2) {
+                } else if (i == 2 && dtoProperty!= "") {
                     addText("@Max(" + dtoProperty + ")\n");
-                } else if (i == 3) {
+                } else if (i == 3 && dtoProperty!= "") {
                     addText("@Min(" + dtoProperty + ")\n");
                 } else if (i == 11) {
                     for (String[] genPropPairValues : entityDict.get(genDTOName)) {
@@ -233,14 +242,16 @@ public class EntityGen extends MiLenguajeBaseListener {
                 // System.out.println("Clave Externa: " + claveExterna);
                 for (Map.Entry<String, ArrayList<String[]>> innerEntry : mapaInterno.entrySet()) {
                     String claveInterna = innerEntry.getKey();
-                    generateDTO(claveExterna,claveInterna);
+                    //generateDTO(claveExterna,claveInterna);
                 }
             }
-        } else if (ctx.definition().definables().dtoDef()!=null) {
+        } else if (ctx.definition() != null){
+            if (ctx.definition().definables().dtoDef()!=null) {
             entityName = ctx.definition().definables().NAME(0).getText();
-            if (!entityDTOs.containsKey(entityName)){
-                entityDTOs.put(entityName, new HashMap<>());
-                DTOsImports.put(entityName, new HashSet<>());
+                if (!entityDTOs.containsKey(entityName)){
+                    entityDTOs.put(entityName, new HashMap<>());
+                    DTOsImports.put(entityName, new HashSet<>());
+                }
             }
         }
     }
@@ -295,10 +306,11 @@ public class EntityGen extends MiLenguajeBaseListener {
         }
     }
 
+
     @Override public void exitDefinables(MiLenguajeParser.DefinablesContext ctx){
 
         if (ctx.ENTITY() != null){
-            generateEntity(entityName);
+            //generateEntity(entityName);
             CRUDGen newGen = new CRUDGen(entityName, entityDict.get(entityName), entityValidations.get(entityName));
             newGen.generate(Set.of(CRUDGen.SERVICE.CREATE, CRUDGen.SERVICE.READ, CRUDGen.SERVICE.UPDATE, CRUDGen.SERVICE.DELETE));
             entityName = "";

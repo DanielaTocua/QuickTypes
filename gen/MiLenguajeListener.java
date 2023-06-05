@@ -1,4 +1,4 @@
-// Generated from C:/Users/danie/IdeaProjects/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
+// Generated from C:/Users/Usuario/IdeaProjects/QuickTypes/grammar\MiLenguaje.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -16,6 +16,16 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStart(MiLenguajeParser.StartContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#generation}.
+	 * @param ctx the parse tree
+	 */
+	void enterGeneration(MiLenguajeParser.GenerationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#generation}.
+	 * @param ctx the parse tree
+	 */
+	void exitGeneration(MiLenguajeParser.GenerationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#definition}.
 	 * @param ctx the parse tree

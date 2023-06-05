@@ -1,9 +1,15 @@
 grammar MiLenguaje;
 
 start
-   : definition start
+   : generation start
+   | definition start
    | EOF
    ;
+
+generation
+    : GENERATE ENTITY NAME
+    | GENERATE NAME DTO NAME
+    ;
 
 definition
    : NEW definables
@@ -146,6 +152,10 @@ NEW
    : 'New'
    ;
 
+GENERATE
+    : 'Generate'
+    ;
+
 ENTITY
    : 'Entity'
    ;
@@ -213,6 +223,7 @@ fragment EXP
 NAME
   :  ([a-zA-Z\u00C0-\u00FF\u0153\u0152])[a-zA-Z\u00C0-\u00FF\u0153\u0152_0-9]*
   ;
+
 WS
    : [ \t\n\r] + -> skip
    ;
