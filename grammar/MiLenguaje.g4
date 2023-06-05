@@ -1,4 +1,5 @@
 grammar MiLenguaje;
+
 start
    : definition start
    | EOF
