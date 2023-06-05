@@ -4,10 +4,10 @@ import { Person } from "../entities/person.entity";
 import PersonService from "../services/person.service";
 
 class PersonFacade {
-async delete(id : number, ): Promise<GenericResponse<string>> {
-		await PersonService.delete({ id,  });
+async create(PersonData: PersonCreationDTO): Promise<GenericResponse<string>> {
+		await PersonService.create(PersonData);
 		return {
-			data: "Person deleted",
+			data: "Person created",
 		};
 	}
 async get(id : number, ): Promise<GenericResponse<Person>> {
@@ -15,10 +15,10 @@ async get(id : number, ): Promise<GenericResponse<Person>> {
 			data: await PersonService.get({ id,  }),
 		};
 	}
-async create(PersonData: PersonCreationDTO): Promise<GenericResponse<string>> {
-		await PersonService.create(PersonData);
+async delete(id : number, ): Promise<GenericResponse<string>> {
+		await PersonService.delete({ id,  });
 		return {
-			data: "Person created",
+			data: "Person deleted",
 		};
 	}
 async update(

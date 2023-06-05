@@ -177,9 +177,13 @@ public class EntityGen extends MiLenguajeBaseListener {
                         }
                     } else if (i == 2 && dtoProperty != "") {
                         addText("@Max(" + dtoProperty + ")\n");
+                    } else if (i == 12 && dtoProperty != "") {
+                        addText("@MaxLength(" + dtoProperty + ")\n");
                     } else if (i == 3 && dtoProperty != "") {
                         addText("@Min(" + dtoProperty + ")\n");
-                    } else if (i == 11) {
+                    } else if (i == 11 && dtoProperty != "") {
+                        addText("@MinLength(" + dtoProperty + ")\n");
+                    } else if (i == 13) {
                         for (String[] genPropPairValues : entityDict.get(genDTOName)) {
                             if (genPropPairValues[0].equals(dtoProperty)) {
                                 switch (genPropPairValues[7]) {
@@ -282,7 +286,7 @@ public class EntityGen extends MiLenguajeBaseListener {
     }
     @Override public void enterDtoDef(MiLenguajeParser.DtoDefContext ctx) {
         String dtoPropertyName = ctx.NAME().getText();
-        entityDTOs.get(entityName).get(dtoName).add(new String[12]);
+        entityDTOs.get(entityName).get(dtoName).add(new String[14]);
         String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(entityDTOs.get(entityName).get(dtoName).size() - 1);
         Arrays.fill(dtoProperties,"");
         dtoProperties[0] = ctx.dtoOpc().getText();
@@ -293,7 +297,7 @@ public class EntityGen extends MiLenguajeBaseListener {
             DTOsImports.get(entityName).add("IsOptional");
         }
 
-        dtoProperties[11] = dtoPropertyName;
+        dtoProperties[13] = dtoPropertyName;
         for (String[] genPropPairValues : entityDict.get(entityName)){
             if (genPropPairValues[0].equals(dtoPropertyName)) {
                 switch (genPropPairValues[7]) {
@@ -392,6 +396,15 @@ public class EntityGen extends MiLenguajeBaseListener {
                 case "IsAlphanumeric":
                     index = 10;
                     break;
+                case "MinLength":
+                    index = 11;
+                    toAdd = ctx.INT().getText();
+                    break;
+                case "MaxLength":
+                    index = 12;
+                    toAdd = ctx.INT().getText();
+                    break;
+
             }
             dtoProperties[index] = toAdd == "" ? validation : toAdd;
             DTOsImports.get(entityName).add(validation);

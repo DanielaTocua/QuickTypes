@@ -23,7 +23,7 @@ New Entity Animal {
     }
 }
 New Animal DTO ToAdopt {
-    strict age: {Max: 8, Min:2},
+    strict age: {Max: 8, MinLength:2},
     flexible breed: {IsAlphanumeric}
 }
 
