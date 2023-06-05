@@ -13,7 +13,7 @@ QuickTypes es un  DSL que permite generar archivos de Typescript de manera senci
 - class-transformer 
 
 ## Características
-- Generación de Entidades de Postgresql
+- Generación de Entidades de Bases de Datos SQL (en este caso se tomará como referencia a Postgresql)
 - Generación de DTOS (Data Transfer Objects) definidos por el usuario
 - Generación automática de servicios de CRUD a partir de entidades definidas por el usuario
 
