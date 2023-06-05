@@ -65,8 +65,11 @@ public class EntityGen extends MiLenguajeBaseListener {
         addText("} from \"typeorm\"\n");
 
         // Imports Entities for relations
+
         for (String entityToImport : entityImports.get(genEntityName)[1]){
-            addText("import { "  + entityToImport + "} from \"./" + Character.toLowerCase(entityToImport.charAt(0)) + entityToImport.substring(1)+ ".entity\"\n");
+            if (entityDict.containsKey(entityToImport)) {
+                addText("import { "  + entityToImport + "} from \"./" + Character.toLowerCase(entityToImport.charAt(0)) + entityToImport.substring(1)+ ".entity\"\n");
+            }
 
         }
 
@@ -108,9 +111,11 @@ public class EntityGen extends MiLenguajeBaseListener {
             if (relConfig[4] != null) {
                 configString += "nullable : true";
             }
-            addText("@" + relConfig[0] + "((type) =>" + entityToRelate + ", {" + configString + "})\n");
-            addText("@JoinColumn({ name: \"" + relConfig[1] + "\", referencedColumnName: \"" + relConfig[2] + "\" })\n");
-            addText(entityToRelate.toLowerCase() + " : " + entityToRelate + "\n");
+            if (entityDict.containsKey(entityToRelate)){
+                addText("@" + relConfig[0] + "((type) =>" + entityToRelate + ", {" + configString + "})\n");
+                addText("@JoinColumn({ name: \"" + relConfig[1] + "\", referencedColumnName: \"" + relConfig[2] + "\" })\n");
+                addText(entityToRelate.toLowerCase() + " : " + entityToRelate + "\n");
+            }
         }
 
         // End of Entity Logic
@@ -134,71 +139,71 @@ public class EntityGen extends MiLenguajeBaseListener {
 
     public void generateDTO(String genDTOName, String iterDtoName) {
 
-        addText("export class " + genDTOName + iterDtoName + "DTO {\n");
-        indent(true);
+        if (entityDict.containsKey(genDTOName)) {
+            addText("export class " + genDTOName + iterDtoName + "DTO {\n");
+            indent(true);
 
-
-        for (int a = 0; a < entityDTOs.get(genDTOName).get(iterDtoName).size(); a++) {
-            String[] dtoProperties = entityDTOs.get(genDTOName).get(iterDtoName).get(a);
-            for (int i = 0; i < dtoProperties.length; i++) {
-                String dtoProperty = dtoProperties[i];
-                if (i == 0) {
-                    addText("@Expose()\n");
-                    if (dtoProperty.equals("strict")) {
-                        addText("@IsNotEmpty()\n");
-                        HashMap<String, HashSet<String>> innerMap = entityValidations.get(genDTOName);
-                        if (innerMap != null) {
-                            HashSet<String> innerSet = innerMap.get(iterDtoName);
-                            if (innerSet != null) {
-                                for (String value : innerSet) {
-                                    addText(value + "\n");
+            for (int a = 0; a < entityDTOs.get(genDTOName).get(iterDtoName).size(); a++) {
+                String[] dtoProperties = entityDTOs.get(genDTOName).get(iterDtoName).get(a);
+                for (int i = 0; i < dtoProperties.length; i++) {
+                    String dtoProperty = dtoProperties[i];
+                    if (i == 0) {
+                        addText("@Expose()\n");
+                        if (dtoProperty.equals("strict")) {
+                            addText("@IsNotEmpty()\n");
+                            HashMap<String, HashSet<String>> innerMap = entityValidations.get(genDTOName);
+                            if (innerMap != null) {
+                                HashSet<String> innerSet = innerMap.get(iterDtoName);
+                                if (innerSet != null) {
+                                    for (String value : innerSet) {
+                                        addText(value + "\n");
+                                    }
                                 }
                             }
-                        }
 
-                    }
-                    if (dtoProperty.equals("flexible")) {
-                        addText("@IsOptional()\n");
-                        HashMap<String, HashSet<String>> innerMap = entityValidations.get(genDTOName);
-                        if (innerMap != null) {
-                            HashSet<String> innerSet = innerMap.get(iterDtoName);
-                            if (innerSet != null) {
-                                for (String value : innerSet) {
-                                    addText(value + "\n");
+                        }
+                        if (dtoProperty.equals("flexible")) {
+                            addText("@IsOptional()\n");
+                            HashMap<String, HashSet<String>> innerMap = entityValidations.get(genDTOName);
+                            if (innerMap != null) {
+                                HashSet<String> innerSet = innerMap.get(iterDtoName);
+                                if (innerSet != null) {
+                                    for (String value : innerSet) {
+                                        addText(value + "\n");
+                                    }
                                 }
                             }
-                        }
 
-                    }
-                } else if (i == 2 && dtoProperty!= "") {
-                    addText("@Max(" + dtoProperty + ")\n");
-                } else if (i == 3 && dtoProperty!= "") {
-                    addText("@Min(" + dtoProperty + ")\n");
-                } else if (i == 11) {
-                    for (String[] genPropPairValues : entityDict.get(genDTOName)) {
-                        if (genPropPairValues[0].equals(dtoProperty)) {
-                            switch (genPropPairValues[7]) {
-                                case "string":
-                                    addText("@IsString()\n");
-                                    break;
-                                case "number":
-                                    addText("@IsNumber()\n");
-                                    break;
-                                case "boolean":
-                                    addText("@IsBoolean()\n");
-                                    break;
+                        }
+                    } else if (i == 2 && dtoProperty != "") {
+                        addText("@Max(" + dtoProperty + ")\n");
+                    } else if (i == 3 && dtoProperty != "") {
+                        addText("@Min(" + dtoProperty + ")\n");
+                    } else if (i == 11) {
+                        for (String[] genPropPairValues : entityDict.get(genDTOName)) {
+                            if (genPropPairValues[0].equals(dtoProperty)) {
+                                switch (genPropPairValues[7]) {
+                                    case "string":
+                                        addText("@IsString()\n");
+                                        break;
+                                    case "number":
+                                        addText("@IsNumber()\n");
+                                        break;
+                                    case "boolean":
+                                        addText("@IsBoolean()\n");
+                                        break;
+                                }
+                                addText(dtoProperty + " : " + genPropPairValues[7] + ";\n\n");
                             }
-                            addText(dtoProperty + " : " + genPropPairValues[7] + ";\n\n");
                         }
-                    }
 
-                } else if (dtoProperty != "") {
-                    addText("@" + dtoProperty + "()\n");
+                    } else if (dtoProperty != "") {
+                        addText("@" + dtoProperty + "()\n");
+                    }
                 }
             }
-        }
-        indent(false);
-        addText("}");
+            indent(false);
+            addText("}");
 
         try {
             File file = new File("tsGen/dtos/" + genDTOName + ".dto.ts");
@@ -230,7 +235,7 @@ public class EntityGen extends MiLenguajeBaseListener {
         } catch (Exception err) {
             System.out.println("File could not be created:  " + err);
 
-        }
+        }}
     }
 
     @Override
