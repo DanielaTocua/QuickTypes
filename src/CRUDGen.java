@@ -126,7 +126,6 @@ public class CRUDGen {
     CRUDGen(String entityName, ArrayList<String[]> entityDefinedDict, HashMap<String, HashSet<String>> validations ){
         this.entityName = entityName;
         this.entityFileName = Character.toLowerCase(entityName.charAt(0)) + entityName.substring(1);
-        System.out.println(entityFileName);
         this.entityDefinedDict = entityDefinedDict;
         this.primaryUrl = "";
         this.primaryParams="";
@@ -138,7 +137,6 @@ public class CRUDGen {
         this.validations = validations;
         this.validationImport = new HashSet<>();
         for (String[] element : entityDefinedDict) {
-            System.out.println(Arrays.toString(element));
             if (element[6].equals("true")) {
                 this.primaries.add( new String[]{element[0], element[7]});
             }
@@ -167,7 +165,6 @@ public class CRUDGen {
             }
             this.primaryString += element[0] + ", ";
         }
-        System.out.println(primaryParams);
 
     }
 
