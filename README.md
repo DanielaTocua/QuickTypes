@@ -1,19 +1,19 @@
 # QuickTypes
 
-Por:  Diego Efrain Mojica Mendez, Diana Valentina Monroy Molina y  Daniela Tocua Perilla
+Por:  Diego Efrain Mojica Mendez, Diana Valentina Monroy Molina y  Daniela Tocua Perilla 
 
-QuickTypes es un  DSL que permite generar archivos de Typescript de manera sencilla y rápida. Con QuickTypes podrás inicializar los servicios de tu API en cuestión de minutos.
+QuickTypes es un  DSL que permite generar archivos de Typescript de manera sencilla y rápida. Con QuickTypes podrás inicializar los servicios de tu API en cuestión de minutos. 
 
 ## Dependencias
 - node
-- expressjs
+- expressjs 
 - postgres
 - typeorm (postgres)
 - class-validator
-- class-transformer
+- class-transformer 
 
 ## Características
-- Generación de Entidades de Postgresql
+- Generación de Entidades de Bases de Datos SQL (en este caso se tomará como referencia a Postgresql) usando TypeORM
 - Generación de DTOS (Data Transfer Objects) definidos por el usuario
 - Generación automática de servicios de CRUD a partir de entidades definidas por el usuario
 
@@ -25,7 +25,7 @@ Puedes clonar el repositorio de QuickTypes clonando el siguiente repositorio:
 git clone https://github.com/DanielaTocua/QuickTypes.git
 
 ```
-o desde GitHub CLI usando
+o desde GitHub CLI usando 
 
 ```bash
 gh repo clone DanielaTocua/QuickTypes
@@ -42,30 +42,30 @@ Si no lo tiene, no se preocupe, en el siguiente repositorio encontrará uno que 
 
 ### Primeros Pasos en QuickTypes
 
-QuickTypes tiene dos operaciones básicas: Definición (**New**) y Generación (**Generate**).
+QuickTypes tiene dos operaciones básicas: Definición (**New**) y Generación (**Generate**). 
 
 #### Definición (New)
 
 Los objetos básicos en QuickTypes son las entidades, puesto que los DTO's y los servicios se generan con base en ellas. Puede definir una entidad usando la sentencia **New** ***Entity*** [nombre de la entidad]
 
 ```
-New Entity Person {
-	properties {
-	number id :{ primary, generated},
-	string name ,
-	string lastname,
-	string email : {validate:{IsEmail}, unique}
-	number age
-	}
+New Entity Person {  
+	properties {  
+	number id :{ primary, generated},  
+	string name ,  
+	string lastname,  
+	string email : {validate:{IsEmail}, unique} 
+	number age 
+	}  
 }
 ```
-Person es el nombre de nuestra entidad, esta tiene las propiedades (columnas) id, name, lastname y  email. El tipo de dato (string, number o boolean) se define antes de cada nombre de columna, y esta se recomienda que se escriba en snake_case, por la falta de     case-sensitivity de Postgres.
+Person es el nombre de nuestra entidad, esta tiene las propiedades (columnas) id, name, lastname y  email. El tipo de dato (string, number o boolean) se define antes de cada nombre de columna, y esta se recomienda que se escriba en snake_case, por la falta de     case-sensitivity de Postgres. 
 Cada columna puede tener propiedades como:
 - primary
 - generated
-- nullable
+- nullable 
 - default : valor
-- length (para el caso de los strings)
+- length (para el caso de los strings) 
 - validate :   {[validaciones]}
 
 Esta última propiedad nos permite definir validaciones que se tomarán en cuenta en la generación de DTOs
@@ -107,7 +107,7 @@ New Entity Animal {
     }
 }
 ```
-También se pueden definir DTOs personalizados, para generarlos futuramente, de la siguiente manera
+También se pueden definir DTOs personalizados, para generarlos futuramente, de la siguiente manera 
 
 ```
 New Animal DTO ToAdopt {
@@ -120,29 +120,35 @@ New Animal DTO ToAdopt {
 En este paso se usan 3 palabras reservadas:
 - strict: Implica que esta columna será requerida y contendrá todas las validaciones definidas desde la entidad
 - flexible: Implica que esta columna es opcional y contendrá todas las validaciones definidas desde la entidad
-- none: implica que esta columna no tendrá ninguna validación por defecto, solamente las que asigne el usuario
+- none: implica que esta columna no tendrá ninguna validación por defecto, solamente las que asigne el usuario 
 
 #### Generación (Generate)
-Luego de definir las entidades deseadas, y los DTOs que querramos generar, podemos usar **Generate** para crear su correspondiente archivo
+Luego de definir las entidades deseadas, y los DTOs que querramos generar, podemos usar **Generate** para crear su correspondiente archivo 
 ```
 Generate Entity User
-Generate User DTO Login
+Generate User DTO Login 
 ```
 
 Esto generará los archivos correspondientes a esas definiciones
 
 
-//TODO: Generación de Servicios
-### Integración con un proyecto
+Finalmente, puedes generar servicios con la palabra reservada **Generate**
+
+```
+Generate Person Services {Create, Update,}
+Generate Animal Services All
+```
+
+### Integración con un proyecto 
 Una vez se generen las carpetas  dentro de TS-Gen, se deberán copiar y pegar estas (o los archivos que desee el usuario dentro de la carpeta src del proyecto en Typescript
 finalmente se deben agregar las rutas a la App de Express.
 
-Ejecuta el proyecto y accede a las rutas
+Ejecuta el proyecto y accede a las rutas 
 ```
-- GET /:id para obtener un dato específico
+- GET /:id para obtener un dato específico 
 - POST / para crear un nuevo dato
 - PUT /:id para modificar un dato
-- DELETE /:id para borrar un dato
+- DELETE /:id para borrar un dato 
 ```
 
 
