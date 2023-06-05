@@ -29,7 +29,8 @@ New Animal DTO ToAdopt {
 Generate Entity Person
 Generate Entity Animal
 Generate Animal DTO ToAdopt
-
+Generate Animal Services All
+Generate Person Services {Create, Update}
 
 
 

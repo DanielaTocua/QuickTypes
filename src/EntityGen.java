@@ -52,6 +52,21 @@ public class EntityGen extends MiLenguajeBaseListener {
         if (ctx.DTO() != null){
             generateDTO(ctx.NAME(0).getText(), ctx.NAME(1).getText());
         }
+        if (ctx.SERVICES()!=null){
+            entityName = ctx.NAME(0).getText();
+            CRUDGen newGen = new CRUDGen(entityName, entityDict.get(entityName), entityValidations.get(entityName));
+            if (ctx.ALL() != null){
+                newGen.generate(Set.of(CRUDGen.SERVICE.CREATE, CRUDGen.SERVICE.READ, CRUDGen.SERVICE.UPDATE, CRUDGen.SERVICE.DELETE));
+            } else {
+                HashSet<CRUDGen.SERVICE> servicesToGen = new HashSet<>();
+                servicesToGen.add(CRUDGen.SERVICE.valueOf(ctx.SERVICETYPES(0).getText().toUpperCase()));
+                if (ctx.SERVICETYPES(1)!= null) {
+                    servicesToGen.add(CRUDGen.SERVICE.valueOf(ctx.SERVICETYPES(1).getText().toUpperCase()));
+                }
+                newGen.generate(servicesToGen);
+            }
+            entityName = "";
+        }
 
     }
     public void generateEntity(String genEntityName) {
@@ -307,16 +322,6 @@ public class EntityGen extends MiLenguajeBaseListener {
     }
 
 
-    @Override public void exitDefinables(MiLenguajeParser.DefinablesContext ctx){
-
-        if (ctx.ENTITY() != null){
-            //generateEntity(entityName);
-            CRUDGen newGen = new CRUDGen(entityName, entityDict.get(entityName), entityValidations.get(entityName));
-            newGen.generate(Set.of(CRUDGen.SERVICE.CREATE, CRUDGen.SERVICE.READ, CRUDGen.SERVICE.UPDATE, CRUDGen.SERVICE.DELETE));
-            entityName = "";
-
-        }
-    }
 
     @Override public void enterPropPairs(MiLenguajeParser.PropPairsContext ctx) {
         String key = ctx.getChild(0).getText();

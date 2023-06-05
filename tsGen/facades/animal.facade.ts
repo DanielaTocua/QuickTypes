@@ -4,21 +4,15 @@ import { Animal } from "../entities/animal.entity";
 import AnimalService from "../services/animal.service";
 
 class AnimalFacade {
-async delete(id : number, ): Promise<GenericResponse<string>> {
-		await AnimalService.delete({ id,  });
+async create(AnimalData: AnimalCreationDTO): Promise<GenericResponse<string>> {
+		await AnimalService.create(AnimalData);
 		return {
-			data: "Animal deleted",
+			data: "Animal created",
 		};
 	}
 async get(id : number, ): Promise<GenericResponse<Animal>> {
 		return {
 			data: await AnimalService.get({ id,  }),
-		};
-	}
-async create(AnimalData: AnimalCreationDTO): Promise<GenericResponse<string>> {
-		await AnimalService.create(AnimalData);
-		return {
-			data: "Animal created",
 		};
 	}
 async update(
@@ -28,6 +22,12 @@ async update(
 		await AnimalService.update({ id,  }, AnimalData);
 		return {
 			data: "Animal updated",
+		};
+	}
+async delete(id : number, ): Promise<GenericResponse<string>> {
+		await AnimalService.delete({ id,  });
+		return {
+			data: "Animal deleted",
 		};
 	}
 }

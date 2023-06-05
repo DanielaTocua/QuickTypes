@@ -211,13 +211,17 @@ public class CRUDGen {
         }
         initFiles();
 
-        for(SERVICE element : services){
-            switch (element){
-                case CREATE -> generateCreate();
-                case READ -> generateRead();
-                case UPDATE -> generateUpdate();
-                case DELETE -> generateDelete();
-            }
+        if (services.contains(SERVICE.CREATE)){
+            generateCreate();
+        }
+        if (services.contains(SERVICE.READ)){
+            generateRead();
+        }
+        if (services.contains(SERVICE.UPDATE)){
+            generateUpdate();
+        }
+        if (services.contains(SERVICE.DELETE)){
+            generateDelete();
         }
         endFiles();
 

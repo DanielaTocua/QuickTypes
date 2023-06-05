@@ -9,6 +9,8 @@ start
 generation
     : GENERATE ENTITY NAME
     | GENERATE NAME DTO NAME
+    | GENERATE NAME SERVICES ALL
+    | GENERATE NAME SERVICES '{' SERVICETYPES (',' SERVICETYPES )* '}'
     ;
 
 definition
@@ -148,6 +150,18 @@ basicValues
    | BOOLEAN
    ;
 
+SERVICES
+   : 'Services'
+   ;
+SERVICETYPES
+   : 'Create'
+   | 'Read'
+   | 'Update'
+   | 'Delete'
+   ;
+ALL
+   : 'All'
+   ;
 NEW
    : 'New'
    ;
