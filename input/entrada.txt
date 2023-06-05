@@ -6,32 +6,5 @@ New Entity Person {
     }
 }
 
-New Entity Animal {
-    properties {
-        number id :{ primary, generated},
-        string name,
-        string breed,
-        number age ,
-        number owner_id
-    }
-    relations {
-        ManyToOne Persons (owner_id, id): {
-            onDelete: cascade
-
-        }
-
-    }
-}
-New Animal DTO ToAdopt {
-    strict age: {Max: 8, MinLength:2},
-    flexible breed: {IsAlphanumeric}
-}
-
 Generate Entity Person
-Generate Entity Animal
-Generate Animal DTO ToAdopt
-Generate Animal Services All
-Generate Person Services {Create, Update}
-
-
 

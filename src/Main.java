@@ -20,7 +20,6 @@ public class Main {
 
             if (args.length>0) {
                 lexer = new MiLenguajeLexer(CharStreams.fromFileName(args[0]));
-                System.out.println("entered file");
             }
             else {
                 lexer = new MiLenguajeLexer(CharStreams.fromStream(System.in));
@@ -32,6 +31,7 @@ public class Main {
             ParseTree tree = parser.start(); // Iniciar el analisis sintáctico en la regla inicial: start
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(new EntityGen(), tree);
+            System.out.println("Execution Ended Succesfully");
             System.out.println();
         } catch (Exception e){
             System.err.println("Error (Test): " + e);
