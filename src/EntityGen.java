@@ -225,10 +225,10 @@ public class EntityGen extends MiLenguajeBaseListener {
             addText("}");
 
         try {
-            File file = new File("tsGen/dtos/" + genDTOName + ".dto.ts");
+            File file = new File("tsGen/dtos/" + Character.toLowerCase(genDTOName.charAt(0)) + genDTOName.substring(1) + ".dto.ts");
             FileWriter fileWriter = null;
             if (!file.exists()) {
-                fileWriter = new FileWriter("tsGen/dtos/" + genDTOName + ".dto.ts", true);
+                fileWriter = new FileWriter("tsGen/dtos/" + Character.toLowerCase(genDTOName.charAt(0)) + genDTOName.substring(1)+ ".dto.ts", true);
                 PrintWriter writer = new PrintWriter(fileWriter);
 
                 // Imports
@@ -244,7 +244,7 @@ public class EntityGen extends MiLenguajeBaseListener {
                 writer.println("} from \"class-validator\"\n");
             }
             if (fileWriter == null) {
-                fileWriter = new FileWriter("tsGen/dtos/" + genDTOName + ".dto.ts", true);
+                fileWriter = new FileWriter("tsGen/dtos/" + Character.toLowerCase(genDTOName.charAt(0)) + genDTOName.substring(1)+ ".dto.ts", true);
             }
             PrintWriter writer = new PrintWriter(fileWriter);
             writer.println(text);
