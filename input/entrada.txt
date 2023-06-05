@@ -1,17 +1,25 @@
-New Entity User {
+New Entity Person {
     properties {
-        id :{ type: number, primary, generated},
-        username : {
-            type: string,
-            validate: {  MinLength : 5},
-            unique
+        number id :{ primary, generated},
+        string name ,
+        string lastname
+    }
+}
 
-        },
-        email : {
-             type: string,
-             validate: {  IsEmail}
-        },
-        password : string
+New Entity Animal {
+    properties {
+        number id :{ primary, generated},
+        string name,
+        string breed,
+        number age ,
+        number owner_id
+    }
+    relations {
+        ManyToOne Person (owner_id, id): {
+            onDelete: cascade
+
+        }
+
     }
 }
 

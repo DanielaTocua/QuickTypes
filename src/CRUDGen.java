@@ -27,12 +27,13 @@ public class CRUDGen {
     String primaryString;
 
     String primaryParsedParams;
+    String entityFileName ;
 
     Map<String,String> templates  = Map.ofEntries(
             Map.entry("routesHeader", "import express from \"express\";\n" +
                     "\n" +
-                    "import %1$sController from \"../controllers/%1$s.controller\";\n" +
-                    "import { %1$sCreationDTO, %1$sUpdateDTO } from \"../dtos/%1$s.baseDto\";\n" +
+                    "import %1$sController from \"../controllers/%2$s.controller\";\n" +
+                    "import { %1$sCreationDTO, %1$sUpdateDTO } from \"../dtos/%2$s.baseDto\";\n" +
                     "import dtoValidationMiddleware from \"../middlewares/dtoValidation.middleware\";\n" +
                     "\n" +
                     "const router = express.Router();"),
@@ -42,7 +43,7 @@ public class CRUDGen {
             Map.entry("deleteRoute", "router.delete(\"%2$s\", %1$sController.delete);"),
             Map.entry("controllerHeader", "import { NextFunction, Request, Response } from \"express\";\n" +
                     "\n" +
-                    "import %1$sFacade from \"../facades/%1$s.facade\";\n" +
+                    "import %1$sFacade from \"../facades/%2$s.facade\";\n" +
                     "\n" +
                     "class %1$sController {"),
             Map.entry("createController", "async create(req: Request, res: Response, next: NextFunction): Promise<void> {\n" +
@@ -55,7 +56,7 @@ public class CRUDGen {
                     "\t}"),
             Map.entry("updateController", "async update(req: Request, res: Response, next: NextFunction): Promise<void> {\n" +
                     "\t\tres\n" +
-                    "\t\t\t.json(await %1$sFacade.update(%2$s, req.body))\n" +
+                    "\t\t\t.json(await %1$sFacade.update(%2$s req.body))\n" +
                     "\t\t\t.status(200);\n" +
                     "\t}"),
             Map.entry("deleteController","async delete(req: Request, res: Response, next: NextFunction): Promise<void> {\n" +
@@ -63,10 +64,10 @@ public class CRUDGen {
                     "\t\t\t.json(await %1$sFacade.delete(%2$s))\n" +
                     "\t\t\t.status(200);\n" +
                     "\t}"),
-            Map.entry("facadeHeader",  "import { MsgResponse } from \"../dtos/GenericResponse.dto\";\n" +
-                    "import { %1$sCreationDTO, %1$sUpdateDTO } from \"../dtos/%1$s.baseDto\";\n" +
-                    "import { %1$s } from \"../entities/%1$s.entity\";\n" +
-                    "import %1$sService from \"../services/%1$s.service\";\n" +
+            Map.entry("facadeHeader",  "import { GenericResponse } from \"../dtos/genericResponse.dto\";\n" +
+                    "import { %1$sCreationDTO, %1$sUpdateDTO } from \"../dtos/%2$s.baseDto\";\n" +
+                    "import { %1$s } from \"../entities/%2$s.entity\";\n" +
+                    "import %1$sService from \"../services/%2$s.service\";\n" +
                     "\n" +
                     "class %1$sFacade {"),
             Map.entry("createFacade", "async create(%1$sData: %1$sCreationDTO): Promise<GenericResponse<string>> {\n" +
@@ -95,7 +96,7 @@ public class CRUDGen {
                     "\t\t\tdata: \"%1$s deleted\",\n" +
                     "\t\t};\n" +
                     "\t}"),
-            Map.entry("service", "import { %1$s } from \"../entities/%1$s.entity\";\n" +
+            Map.entry("service", "import { %1$s } from \"../entities/%2$s.entity\";\n" +
                     "import BaseService from \"./base.service\";\n" +
                     "\n" +
                     "class %1$sService extends BaseService<%1$s> {\n" +
@@ -124,6 +125,8 @@ public class CRUDGen {
 
     CRUDGen(String entityName, ArrayList<String[]> entityDefinedDict, HashMap<String, HashSet<String>> validations ){
         this.entityName = entityName;
+        this.entityFileName = Character.toLowerCase(entityName.charAt(0)) + entityName.substring(1);
+        System.out.println(entityFileName);
         this.entityDefinedDict = entityDefinedDict;
         this.primaryUrl = "";
         this.primaryParams="";
@@ -147,6 +150,7 @@ public class CRUDGen {
             }
         }
         for (String[] element : primaries) {
+
             this.primaryUrl += "/:"+element[0];
             this.primaryParams += element[0] + " : "+ element[1] + ", ";
             switch (element[1]){
@@ -163,6 +167,7 @@ public class CRUDGen {
             }
             this.primaryString += element[0] + ", ";
         }
+        System.out.println(primaryParams);
 
     }
 
@@ -224,16 +229,16 @@ public class CRUDGen {
             copyBaseFilesIntoGenFolder();
 
             //Init routeFile
-            PrintWriter routeInit = new PrintWriter("tsGen/routes/" + entityName + ".routes.ts", "UTF-8");
-            routeInit.println(String.format(templates.get("routesHeader"),entityName));
+            PrintWriter routeInit = new PrintWriter("tsGen/routes/" + entityFileName + ".routes.ts", "UTF-8");
+            routeInit.println(String.format(templates.get("routesHeader"),entityName, entityFileName));
             routeInit.close();
 
             //Init controller file
-            PrintWriter controllerInit = new PrintWriter("tsGen/controllers/" + entityName + ".controller.ts", "UTF-8");
-            controllerInit.println(String.format(templates.get("controllerHeader"),entityName));
+            PrintWriter controllerInit = new PrintWriter("tsGen/controllers/" + entityFileName + ".controller.ts", "UTF-8");
+            controllerInit.println(String.format(templates.get("controllerHeader"),entityName, entityFileName));
             controllerInit.close();
             //Init baseDto file
-            PrintWriter baseDtoInit = new PrintWriter("tsGen/dtos/" + entityName + ".baseDto.ts", "UTF-8");
+            PrintWriter baseDtoInit = new PrintWriter("tsGen/dtos/" + entityFileName + ".baseDto.ts", "UTF-8");
             baseDtoInit.println("import { Expose } from \"class-transformer\";");
             baseDtoInit.println("import {");
             Pattern p = Pattern.compile("@([A-Za-z]*)\\([^)]*\\)");
@@ -242,7 +247,7 @@ public class CRUDGen {
                 for (String validation : validations.get(element)){
 
                     Matcher m = p.matcher(validation);
-                    if (m.find()){
+                    if (m.find() && !generated.contains(element)){
                         validationImport.add(m.group(1));
                     }
                 }
@@ -256,13 +261,13 @@ public class CRUDGen {
             baseDtoInit.close();
 
             //Init facade file
-            PrintWriter facadeInit = new PrintWriter("tsGen/facades/" + entityName + ".facade.ts", "UTF-8");
-            facadeInit.println(String.format(templates.get("facadeHeader"),entityName));
+            PrintWriter facadeInit = new PrintWriter("tsGen/facades/" + entityFileName + ".facade.ts", "UTF-8");
+            facadeInit.println(String.format(templates.get("facadeHeader"),entityName, entityFileName));
             facadeInit.close();
 
             //Create Service file
-            PrintWriter serviceInit = new PrintWriter("tsGen/services/" + entityName + ".service.ts", "UTF-8");
-            serviceInit.println(String.format(templates.get("service"),entityName));
+            PrintWriter serviceInit = new PrintWriter("tsGen/services/" + entityFileName + ".service.ts", "UTF-8");
+            serviceInit.println(String.format(templates.get("service"),entityName, entityFileName));
             serviceInit.close();
 
 
@@ -270,10 +275,10 @@ public class CRUDGen {
 
 
             //Inicializa la variable del archivo
-            this.routesFile  = new FileWriter("tsGen/routes/" + entityName + ".routes.ts", true);
-            this.controllerFile  = new FileWriter("tsGen/controllers/" + entityName + ".controller.ts", true);
-            this.dtoFile = new FileWriter("tsGen/dtos/" + entityName + ".baseDto.ts", true);
-            this.facadeFile = new FileWriter("tsGen/facades/" + entityName + ".facade.ts", true);
+            this.routesFile  = new FileWriter("tsGen/routes/" + entityFileName + ".routes.ts", true);
+            this.controllerFile  = new FileWriter("tsGen/controllers/" + entityFileName + ".controller.ts", true);
+            this.dtoFile = new FileWriter("tsGen/dtos/" + entityFileName + ".baseDto.ts", true);
+            this.facadeFile = new FileWriter("tsGen/facades/" + entityFileName + ".facade.ts", true);
         } catch (Exception err){
             System.out.println("The files couldn't be initialized: " +  err);
 
@@ -347,9 +352,11 @@ public class CRUDGen {
             case UPDATE:
                 dtoWriter.println("export class "+ entityName + "UpdateDTO {");
                 for (String element : validations.keySet()){
+
                     if (generated.contains(element)){
                         continue;
                     }
+
 
                     dtoWriter.println("\t@IsOptional()");
                     for (String validation : validations.get(element)){

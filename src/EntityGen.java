@@ -57,7 +57,7 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         // Imports Entities for relations
         for (String entityToImport : entityImports.get(genEntityName)[1]){
-            addText("import { "  + entityToImport + "} from \"./" + entityToImport+ ".entity\"\n");
+            addText("import { "  + entityToImport + "} from \"./" + Character.toLowerCase(entityToImport.charAt(0)) + entityToImport.substring(1)+ ".entity\"\n");
 
         }
 
@@ -111,7 +111,7 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         // File Creation
         try{
-            PrintWriter writer = new PrintWriter("tsGen/entities/" +  genEntityName + ".entity.ts", "UTF-8");
+            PrintWriter writer = new PrintWriter("tsGen/entities/" +  Character.toLowerCase(genEntityName.charAt(0)) + genEntityName.substring(1)+ ".entity.ts", "UTF-8");
             writer.println(text);
             writer.close();
             // Resets used values
@@ -277,9 +277,6 @@ public class EntityGen extends MiLenguajeBaseListener {
         ArrayList<String[]> entityColumns =  entityDict.get(entityName);
         String[] propPairValues  = entityColumns.get(entityColumns.size()-1);
         switch (key) {
-            case "type":
-                propPairValues[7] = ctx.types().getText();
-                break;
             case "length":
                 propPairValues[1] = ctx.INT().getText();
                 break;
@@ -361,10 +358,20 @@ public class EntityGen extends MiLenguajeBaseListener {
         entityColumns.add(propPairValues);
         Arrays.fill(propPairValues, "");
         propPairValues[0] = ctx.NAME().getText().toLowerCase();
+        propPairValues[7] = ctx.types().getText();
         entityValidations.get(entityName).put(columnName, new HashSet<>());
-        if (ctx.types() != null) {
-            propPairValues[7] = ctx.types().getText();
+        switch ( ctx.types().getText()){
+            case "string":
+                entityValidations.get(entityName).get(columnName).add("@IsString()");
+                break;
+            case "number":
+                entityValidations.get(entityName).get(columnName).add("@IsNumber()");
+                break;
+            case "boolean":
+                entityValidations.get(entityName).get(columnName).add("@IsBoolean()");
+                break;
         }
+
 
     }
 

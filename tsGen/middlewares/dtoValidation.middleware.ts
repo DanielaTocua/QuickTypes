@@ -2,6 +2,7 @@ import { plainToInstance } from "class-transformer";
 import { validate, ValidationError } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 
+// Tomado y adaptado  de: Imran Younas -  https://www.linkedin.com/pulse/dto-json-payload-expressjs-validation-middleware-imran-younas/
 export default <T>(dtoType: new () => T, skipMissingProperties = false) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const dtoObj = plainToInstance(dtoType, req.body, {
