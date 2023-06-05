@@ -1,18 +1,36 @@
-New Entitiy User {
+New Entity Person {
     properties {
-        calificacion : {
-        type: int
-        validate: { type : int, max : 5}{
-        }
-        length: 10
-
-        }
-        username: string
-        email : string
-        password : string
-
+        number id :{ primary, generated},
+        string name ,
+        string lastname
     }
-    relatons {
-    }
-
 }
+
+New Entity Animal {
+    properties {
+        number id :{ primary, generated},
+        string name,
+        string breed,
+        number age ,
+        number owner_id
+    }
+    relations {
+        ManyToOne Persons (owner_id, id): {
+            onDelete: cascade
+
+        }
+
+    }
+}
+New Animal DTO ToAdopt {
+    strict age: {Max: 8, Min:2},
+    flexible breed: {IsAlphanumeric}
+}
+
+Generate Entity Person
+Generate Entity Animal
+Generate Animal DTO ToAdopt
+
+
+
+

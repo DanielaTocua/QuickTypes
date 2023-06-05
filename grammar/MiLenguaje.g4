@@ -1,9 +1,15 @@
 grammar MiLenguaje;
 
 start
-   : definition EOF
-// | generation EOF
+   : generation start
+   | definition start
+   | EOF
    ;
+
+generation
+    : GENERATE ENTITY NAME
+    | GENERATE NAME DTO NAME
+    ;
 
 definition
    : NEW definables
@@ -11,16 +17,37 @@ definition
 
 definables
    : ENTITY NAME '{' entityDef '}'
- //| DTO name '{' dtoDef '}'
+   | NAME DTO NAME '{' dtoDef '}'
+   ;
+dtoDef
+   : dtoOpc NAME  ':' dtoOptions  dtoDefRecursion
    ;
 
+dtoDefRecursion
+   : ',' dtoDef
+   |
+   ;
+
+dtoOptions
+   : '{' validationPairs (',' validationPairs)* '}'
+   ;
+dtoOpc
+   : 'strict'
+   | 'flexible'
+   | 'none'
+   ;
 entityDef
-   : PROPERTIES '{' propDef '}' RELATIONS relDef
+   : PROPERTIES '{' propDef '}' RELATIONS '{' relDef '}'
    | PROPERTIES '{' propDef '}'
    ;
 
-relDef
-   : '{' NAME ':' relObj '}'
+relDef // relatedTable - columnName - relatedColumnName
+   :  relationTypes NAME '(' NAME ',' NAME  ')' ':' relObj relDefRecursion
+   ;
+
+relDefRecursion
+   : ',' relDef
+   |
    ;
 
 relObj
@@ -28,9 +55,8 @@ relObj
    ;
 
 relPairs
-   : 'relation' ':' relationTypes
-   | 'onDelete' ':' onDeleteTypes
-   | 'nullable' ':' BOOLEAN
+   : 'onDelete' ':' onDeleteTypes
+   | 'nullable'
    ;
 onDeleteTypes
    : 'restrict'
@@ -48,13 +74,11 @@ relationTypes
 
 
 propDef
-   :  NAME ':' types propDefRecursion
-   |  NAME ':' propObj propDefRecursion
+   :  types NAME propDefRecursion
+   |  types NAME ':' propObj propDefRecursion
    ;
 propDefRecursion
    : ',' propDef
-   | NAME ':' types
-   | NAME ':' propObj
    |
    ;
 propObj
@@ -62,12 +86,13 @@ propObj
    ;
 
 propPairs
-   : 'type' ':' types
-   | 'validate' ':' validationObj
-   | 'length' ':' INT
-   | 'primary'
-   | 'nullable' ':' BOOLEAN
+   : 'length' ':' INT
+   | 'nullable'
    | 'default' ':' basicValues
+   | 'generated'
+   | 'unique'
+   | 'validate' ':' validationObj
+   | 'primary'
    ;
 
 
@@ -76,16 +101,18 @@ validationObj
    ;
 
 validationPairs
-   : 'isEmail'
-   | 'max' ':' INT
-   | 'min' ':' INT
-   | 'isPositive'
-   | 'isNegative'
-   | 'isBooleanString'
-   | 'isDateString'
-   | 'isNumberString'
-   | 'isAlpha'
-   | 'isAlphanumeric'
+   : 'IsEmail'
+   | 'Max' ':' INT
+   | 'Min' ':' INT
+   | 'IsPositive'
+   | 'IsNegative'
+   | 'IsBooleanString'
+   | 'IsDateString'
+   | 'IsNumberString'
+   | 'IsAlpha'
+   | 'IsAlphanumeric'
+   | 'MinLength' ':' INT
+   | 'MaxLength' ':' INT
    ;
 
 types
@@ -124,6 +151,10 @@ basicValues
 NEW
    : 'New'
    ;
+
+GENERATE
+    : 'Generate'
+    ;
 
 ENTITY
    : 'Entity'
@@ -192,6 +223,7 @@ fragment EXP
 NAME
   :  ([a-zA-Z\u00C0-\u00FF\u0153\u0152])[a-zA-Z\u00C0-\u00FF\u0153\u0152_0-9]*
   ;
+
 WS
    : [ \t\n\r] + -> skip
    ;

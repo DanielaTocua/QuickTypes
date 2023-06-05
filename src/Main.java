@@ -1,17 +1,42 @@
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+import java.io.File;
+
 public class Main {
-    public static void main(String[] args) {
-        // Press Alt+Intro with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    public static void main(String[] args) throws Exception {
+        try{
+            // crear un analizador léxico a partir de la entrada (archivo  o consola)
+            MiLenguajeLexer lexer;
+            // Generar carpetas base
+            Boolean a = new File("tsGen").mkdir();
 
-        // Press Mayús+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
+            String carpetas[] = {"entities", "dtos", "routes", "controllers", "services", "facades", "middlewares"};
+            for (int i = 0; i < carpetas.length; i++){
+                File dir = new File("tsGen/" + carpetas[i] );
+                dir.mkdir();
+            }
 
-            // Press Mayús+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+
+
+            if (args.length>0) {
+                lexer = new MiLenguajeLexer(CharStreams.fromFileName(args[0]));
+                System.out.println("entered file");
+            }
+            else {
+                lexer = new MiLenguajeLexer(CharStreams.fromStream(System.in));
+            }
+            // Identificar al analizador léxico como fuente de tokens para el sintactico
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            // Crear el objeto del analizador sintáctico a partir del buffer de tokens
+            MiLenguajeParser parser = new MiLenguajeParser(tokens);
+            ParseTree tree = parser.start(); // Iniciar el analisis sintáctico en la regla inicial: start
+            ParseTreeWalker walker = new ParseTreeWalker();
+            walker.walk(new EntityGen(), tree);
+            System.out.println();
+        } catch (Exception e){
+            System.err.println("Error (Test): " + e);
         }
     }
+
 }
+
