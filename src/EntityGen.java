@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.Array;
 import java.io.FileWriter;
 
+
 import java.util.*;
 
 public class EntityGen extends MiLenguajeBaseListener {
@@ -55,8 +56,8 @@ public class EntityGen extends MiLenguajeBaseListener {
         addText("} from \"typeorm\"\n");
 
         // Imports Entities for relations
-        for (String entityToImport : entityImports.get(genEntityName)[1]) {
-            addText("import { " + entityToImport + "} from \"./" + entityToImport + ".entity\"\n");
+        for (String entityToImport : entityImports.get(genEntityName)[1]){
+            addText("import { "  + entityToImport + "} from \"./" + Character.toLowerCase(entityToImport.charAt(0)) + entityToImport.substring(1)+ ".entity\"\n");
 
         }
 
@@ -77,12 +78,11 @@ public class EntityGen extends MiLenguajeBaseListener {
                 columnString += "Generated";
             }
             columnString += "Column({";
-            columnString += ((genPropPairValues[1].isBlank()) ? "" : "length : " + genPropPairValues[1] + ",");
-            ;
-            columnString += ((genPropPairValues[2].isBlank()) ? "" : "nullable : true");
-            columnString += ((genPropPairValues[3].isBlank()) ? "" : "default : " + genPropPairValues[3] + ",");
-            columnString += ((genPropPairValues[5].isBlank()) ? "" : "unique : true");
-            columnString += ("})\n");
+            columnString+=((genPropPairValues[1].isBlank()) ? "" : "length : "+  genPropPairValues[1] + ","); ;
+            columnString+=((genPropPairValues[2].isBlank()) ? "" : "nullable : true");
+            columnString+=((genPropPairValues[3].isBlank()) ? "" : "default : " + genPropPairValues[3] + ",");
+            columnString+=((genPropPairValues[5].isBlank()) ? "" : "unique : true");
+            columnString+=("})\n");
             addText(columnString);
             addText(genPropPairValues[0] + " : " + genPropPairValues[7] + "\n");
 
@@ -110,8 +110,8 @@ public class EntityGen extends MiLenguajeBaseListener {
 
 
         // File Creation
-        try {
-            PrintWriter writer = new PrintWriter("tsGen/entities/" + genEntityName + ".entity.ts", "UTF-8");
+        try{
+            PrintWriter writer = new PrintWriter("tsGen/entities/" +  Character.toLowerCase(genEntityName.charAt(0)) + genEntityName.substring(1)+ ".entity.ts", "UTF-8");
             writer.println(text);
             writer.close();
             // Resets used values
@@ -299,7 +299,10 @@ public class EntityGen extends MiLenguajeBaseListener {
 
         if (ctx.ENTITY() != null){
             generateEntity(entityName);
+            CRUDGen newGen = new CRUDGen(entityName, entityDict.get(entityName), entityValidations.get(entityName));
+            newGen.generate(Set.of(CRUDGen.SERVICE.CREATE, CRUDGen.SERVICE.READ, CRUDGen.SERVICE.UPDATE, CRUDGen.SERVICE.DELETE));
             entityName = "";
+
         }
     }
 
@@ -308,9 +311,6 @@ public class EntityGen extends MiLenguajeBaseListener {
         ArrayList<String[]> entityColumns =  entityDict.get(entityName);
         String[] propPairValues  = entityColumns.get(entityColumns.size()-1);
         switch (key) {
-            case "type":
-                propPairValues[7] = ctx.types().getText();
-                break;
             case "length":
                 propPairValues[1] = ctx.INT().getText();
                 break;
@@ -324,7 +324,7 @@ public class EntityGen extends MiLenguajeBaseListener {
                 propPairValues[4] = "true";
                 break;
             case "unique":
-                propPairValues[5] = ctx.basicValues().getText();
+                propPairValues[5] ="true";
                 break;
             case "primary":
                 propPairValues[6] = "true";
@@ -335,7 +335,6 @@ public class EntityGen extends MiLenguajeBaseListener {
     @Override public void enterValidationPairs(MiLenguajeParser.ValidationPairsContext ctx) {
         if (MiLenguajeParser.ruleNames[ctx.getParent().getParent().getRuleIndex()].equals("propPairs")){
             entityValidations.get(entityName).get(columnName).add("@" + ctx.getChild(0) + "(" + (ctx.getChild(2)==null ? "" : ctx.getChild(2).getText())+") ");
-
         }else{
             String validation = ctx.getChild(0).getText();
             String[] dtoProperties  = entityDTOs.get(entityName).get(dtoName).get(entityDTOs.get(entityName).get(dtoName).size() - 1);
@@ -389,10 +388,20 @@ public class EntityGen extends MiLenguajeBaseListener {
         entityColumns.add(propPairValues);
         Arrays.fill(propPairValues, "");
         propPairValues[0] = ctx.NAME().getText().toLowerCase();
+        propPairValues[7] = ctx.types().getText();
         entityValidations.get(entityName).put(columnName, new HashSet<>());
-        if (ctx.types() != null) {
-            propPairValues[7] = ctx.types().getText();
+        switch ( ctx.types().getText()){
+            case "string":
+                entityValidations.get(entityName).get(columnName).add("@IsString()");
+                break;
+            case "number":
+                entityValidations.get(entityName).get(columnName).add("@IsNumber()");
+                break;
+            case "boolean":
+                entityValidations.get(entityName).get(columnName).add("@IsBoolean()");
+                break;
         }
+
 
     }
 

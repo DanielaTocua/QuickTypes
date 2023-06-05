@@ -1,0 +1,13 @@
+// This file should go  inside the src folder.
+// You have to configure your .envfile
+
+import "dotenv/config";
+
+import { DataSource } from "typeorm";
+
+export const appDataSource = new DataSource({
+	type: databaseType,
+	url: 'yourDatabaseUrl',
+	entities: ["dist/entities/**/*.js"],
+	migrations: ["dist/migration/*.js"],
+});

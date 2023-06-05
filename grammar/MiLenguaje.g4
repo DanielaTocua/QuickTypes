@@ -68,8 +68,8 @@ relationTypes
 
 
 propDef
-   :  NAME ':' types propDefRecursion
-   |  NAME ':' propObj propDefRecursion
+   :  types NAME propDefRecursion
+   |  types NAME ':' propObj propDefRecursion
    ;
 propDefRecursion
    : ',' propDef
@@ -80,8 +80,7 @@ propObj
    ;
 
 propPairs
-   : 'type' ':' types
-   | 'length' ':' INT
+   : 'length' ':' INT
    | 'nullable'
    | 'default' ':' basicValues
    | 'generated'
@@ -106,6 +105,8 @@ validationPairs
    | 'IsNumberString'
    | 'IsAlpha'
    | 'IsAlphanumeric'
+   | 'MinLength' ':' INT
+   | 'MaxLength' ':' INT
    ;
 
 types

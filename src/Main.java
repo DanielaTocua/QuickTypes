@@ -10,9 +10,9 @@ public class Main {
             // Generar carpetas base
             Boolean a = new File("tsGen").mkdir();
 
-            String carpetas[] = {"entities", "dtos"};
+            String carpetas[] = {"entities", "dtos", "routes", "controllers", "services", "facades", "middlewares"};
             for (int i = 0; i < carpetas.length; i++){
-                File dir = new File("tsGen/" + carpetas[i]);
+                File dir = new File("tsGen/" + carpetas[i] );
                 dir.mkdir();
             }
 
